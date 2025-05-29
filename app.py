@@ -70,16 +70,19 @@ with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
 with st.expander("CALCULATE VENDOR PRICING", expanded=False):
     with st.container():
         unit_cost_v = st.number_input("UNIT COST (Vendor)", min_value=0.0, key="vendor_cost", value=None, placeholder="")
+        margin_v = st.number_input("MARGIN % (Vendor)", min_value=0.0, max_value=99.9, key="vendor_margin", value=None, placeholder="")
         discount_code_v = st.text_input("DISCOUNT CODE (Vendor)", key="vendor_code").upper()
-        price_v = st.number_input("SELLING PRICE (Vendor)", min_value=0.0, key="vendor_price", value=None, placeholder="")
 
-        discount = codes_dict_top.get(discount_code_v, codes_dict_bottom.get(discount_code_v, 0))
-        discounted_price = price_v * (1 - discount)
-        margin_v = ((discounted_price - unit_cost_v) / discounted_price * 100) if discounted_price > 0 else 0
-        profit_v = discounted_price - unit_cost_v
+        if unit_cost_v is not None and margin_v is not None and margin_v < 100:
+            discount = codes_dict_top.get(discount_code_v, codes_dict_bottom.get(discount_code_v, 0))
+            discounted_price = unit_cost_v / (1 - margin_v / 100)
+            selling_price = discounted_price / (1 - discount)
+            profit_v = discounted_price - unit_cost_v
+        else:
+            discounted_price = selling_price = profit_v = 0.0
 
+        st.metric("SELLING PRICE", f"${selling_price:.2f}")
         st.metric("DISCOUNTED PRICE", f"${discounted_price:.2f}")
-        st.metric("MARGIN", f"{margin_v:.2f}%")
         st.metric("PROFIT", f"${profit_v:.2f}")
 
 # --- Discount Code Reference Tables ---
