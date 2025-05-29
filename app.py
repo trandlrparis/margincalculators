@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 
@@ -96,36 +97,42 @@ with st.expander("CALCULATE VENDOR PRICING", expanded=True):
 st.markdown("---")
 st.markdown("### DISCOUNT CODE REFERENCE")
 
+st.markdown("#### ABC System")
 df_top = pd.DataFrame({
     "Code": list(codes_dict_top.keys()),
     "Discount %": [int(v * 100) for v in codes_dict_top.values()]
 })
 
+st.dataframe(df_top.style.set_table_styles([
+    {'selector': 'th', 'props': [('background-color', '#DDEEFF'), ('color', 'black'), ('font-weight', 'bold')]},
+    {'selector': 'td', 'props': [('background-color', '#FFFFFF'), ('color', 'black')]},
+    {'selector': 'table', 'props': [('border', '2px solid #4477AA')]}
+]), use_container_width=True)
+
+st.markdown("#### PQR System")
 df_bottom = pd.DataFrame({
     "Code": list(codes_dict_bottom.keys()),
     "Discount %": [int(v * 100) for v in codes_dict_bottom.values()]
 })
 
-st.markdown("#### Top Codes")
-st.dataframe(df_top.style.set_properties(**{'background-color': '#F5F5F5', 'border': '1px solid black'}), use_container_width=True)
-
-st.markdown("#### Bottom Codes")
-st.dataframe(df_bottom.style.set_properties(**{'background-color': '#F5F5F5', 'border': '1px solid black'}), use_container_width=True)
+st.dataframe(df_bottom.style.set_table_styles([
+    {'selector': 'th', 'props': [('background-color', '#FFEEDD'), ('color', 'black'), ('font-weight', 'bold')]},
+    {'selector': 'td', 'props': [('background-color', '#FFFFFF'), ('color', 'black')]},
+    {'selector': 'table', 'props': [('border', '2px solid #AA7744')]}
+]), use_container_width=True)
 
 # Add CSS to prevent scroll lock and override tab navigation
-st.markdown("""
-    <style>
-    .stNumberInput input[type=number]::-webkit-outer-spin-button,
-    .stNumberInput input[type=number]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    input:focus {
-        outline: 2px solid #4A90E2;
-    }
-    input, select, textarea {
-        tab-index: 0;
-    }
-    .block-container { overflow-y: auto; }
-    </style>
-""", unsafe_allow_html=True)
+st.markdown("""<style>
+.stNumberInput input[type=number]::-webkit-outer-spin-button,
+.stNumberInput input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+input:focus {
+    outline: 2px solid #4A90E2;
+}
+input, select, textarea {
+    tab-index: 0;
+}
+.block-container { overflow-y: auto; }
+</style>""", unsafe_allow_html=True)
