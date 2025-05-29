@@ -19,10 +19,10 @@ st.markdown("# **FINANCIAL CALCULATOR**")
 # --- Selling Price by Margin ---
 with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
     with st.container():
-        total_cost = st.number_input("TOTAL COST", min_value=0.0, value=0.0)
-        margin = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=30.0)
+        total_cost = st.number_input("TOTAL COST", min_value=0.0)
+        margin = st.number_input("MARGIN %", min_value=0.0, max_value=99.9)
 
-        if margin < 100:
+        if margin and margin < 100:
             selling_price = total_cost / (1 - margin / 100)
             profit = selling_price - total_cost
         else:
@@ -34,13 +34,13 @@ with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
 # --- Selling Price by Landed Cost ---
 with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
     with st.container():
-        item_cost = st.number_input("ITEM COST", min_value=0.0, value=0.0)
-        shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, value=0.0)
-        sample_cost = st.number_input("SAMPLE COST", min_value=0.0, value=0.0)
-        quantity = st.number_input("QTY", min_value=1, value=10)
-        margin2 = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=30.0)
+        item_cost = st.number_input("ITEM COST", min_value=0.0)
+        shipping_cost = st.number_input("SHIPPING COST", min_value=0.0)
+        sample_cost = st.number_input("SAMPLE COST", min_value=0.0)
+        quantity = st.number_input("QTY", min_value=1)
+        margin2 = st.number_input("MARGIN %", min_value=0.0, max_value=99.9)
 
-        if quantity > 0 and margin2 < 100:
+        if quantity and margin2 < 100:
             total_cost = item_cost + shipping_cost + sample_cost
             unit_cost = total_cost / quantity
             unit_price = unit_cost / (1 - margin2 / 100)
@@ -55,10 +55,10 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
 # --- Margin by Selling Price ---
 with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
     with st.container():
-        total_cost3 = st.number_input("TOTAL COST", min_value=0.0, value=0.0)
-        price3 = st.number_input("SELLING PRICE", min_value=0.0, value=0.0)
+        total_cost3 = st.number_input("TOTAL COST", min_value=0.0)
+        price3 = st.number_input("SELLING PRICE", min_value=0.0)
 
-        if price3 > 0:
+        if price3:
             profit3 = price3 - total_cost3
             margin3 = profit3 / price3 * 100
         else:
@@ -70,8 +70,8 @@ with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
 # --- Vendor Pricing (Based on R72:X75) ---
 with st.expander("CALCULATE VENDOR PRICING", expanded=True):
     with st.container():
-        unit_cost_v = st.number_input("UNIT COST", min_value=0.0, value=0.0)
-        price_v = st.number_input("SELLING PRICE", min_value=0.0, value=0.0)
+        unit_cost_v = st.number_input("UNIT COST", min_value=0.0)
+        price_v = st.number_input("SELLING PRICE", min_value=0.0)
         discount_code_v = st.text_input("DISCOUNT CODE").upper()
 
         discount = codes_dict_top.get(discount_code_v, codes_dict_bottom.get(discount_code_v, 0))
