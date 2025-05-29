@@ -1,3 +1,4 @@
+
 import streamlit as st
 import pandas as pd
 
@@ -22,7 +23,7 @@ with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
         total_cost = st.number_input("TOTAL COST", min_value=0.0, key="margin_total_cost", value=None, placeholder="")
         margin = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="margin_margin", value=None, placeholder="")
 
-        if total_cost and margin is not None and margin < 100:
+        if total_cost is not None and margin is not None and margin < 100:
             selling_price = total_cost / (1 - margin / 100)
             profit = selling_price - total_cost
         else:
@@ -37,11 +38,12 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
         item_cost = st.number_input("ITEM COST", min_value=0.0, key="landed_item", value=None, placeholder="")
         shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, key="landed_shipping", value=None, placeholder="")
         sample_cost = st.number_input("SAMPLE COST", min_value=0.0, key="landed_sample", value=None, placeholder="")
+        setup_cost = st.number_input("SETUP COST", min_value=0.0, key="landed_setup", value=None, placeholder="")
         quantity = st.number_input("QTY", min_value=1, key="landed_qty", value=None, placeholder="")
         margin2 = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="landed_margin", value=None, placeholder="")
 
-        if all(v is not None for v in [item_cost, shipping_cost, sample_cost, quantity, margin2]) and margin2 < 100:
-            unit_cost = ((item_cost * quantity) + shipping_cost + sample_cost) / quantity
+        if all(v is not None for v in [item_cost, shipping_cost, sample_cost, setup_cost, quantity, margin2]) and margin2 < 100:
+            unit_cost = (((item_cost * quantity) + shipping_cost + sample_cost + setup_cost)) / quantity
             unit_price = unit_cost / (1 - margin2 / 100)
             profit2 = unit_price - unit_cost
         else:
@@ -57,7 +59,7 @@ with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
         total_cost3 = st.number_input("TOTAL COST", min_value=0.0, key="margin_by_cost", value=None, placeholder="")
         price3 = st.number_input("SELLING PRICE", min_value=0.0, key="margin_by_price", value=None, placeholder="")
 
-        if total_cost3 and price3 and price3 > 0:
+        if total_cost3 is not None and price3 is not None and price3:
             profit3 = price3 - total_cost3
             margin3 = profit3 / price3 * 100
         else:
@@ -107,18 +109,18 @@ st.dataframe(pqr_table, use_container_width=True, hide_index=True)
 
 # Add CSS to prevent scroll lock and override tab navigation
 st.markdown("""
-<style>
-.stNumberInput input[type=number]::-webkit-outer-spin-button,
-.stNumberInput input[type=number]::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
-}
-input:focus {
-    outline: 2px solid #4A90E2;
-}
-input, select, textarea {
-    tab-index: 0;
-}
-.block-container { overflow-y: auto; }
-</style>
+    <style>
+    .stNumberInput input[type=number]::-webkit-outer-spin-button,
+    .stNumberInput input[type=number]::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+    input:focus {
+        outline: 2px solid #4A90E2;
+    }
+    input, select, textarea {
+        tab-index: 0;
+    }
+    .block-container { overflow-y: auto; }
+    </style>
 """, unsafe_allow_html=True)
