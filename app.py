@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 
@@ -42,7 +41,7 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
         margin2 = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="landed_margin", value=None, placeholder="")
 
         if all(v is not None for v in [item_cost, shipping_cost, sample_cost, quantity, margin2]) and margin2 < 100:
-            unit_cost = (item_cost + shipping_cost + sample_cost) / quantity
+            unit_cost = ((item_cost * quantity) + shipping_cost + sample_cost) / quantity
             unit_price = unit_cost / (1 - margin2 / 100)
             profit2 = unit_price - unit_cost
         else:
@@ -107,7 +106,7 @@ st.dataframe(df_top.style.set_table_styles([
     {'selector': 'th', 'props': [('background-color', '#DDEEFF'), ('color', 'black'), ('font-weight', 'bold')]},
     {'selector': 'td', 'props': [('background-color', '#FFFFFF'), ('color', 'black')]},
     {'selector': 'table', 'props': [('border', '2px solid #4477AA')]}
-]), use_container_width=True)
+]).hide(axis="index"), use_container_width=True)
 
 st.markdown("#### PQR System")
 df_bottom = pd.DataFrame({
@@ -119,7 +118,7 @@ st.dataframe(df_bottom.style.set_table_styles([
     {'selector': 'th', 'props': [('background-color', '#FFEEDD'), ('color', 'black'), ('font-weight', 'bold')]},
     {'selector': 'td', 'props': [('background-color', '#FFFFFF'), ('color', 'black')]},
     {'selector': 'table', 'props': [('border', '2px solid #AA7744')]}
-]), use_container_width=True)
+]).hide(axis="index"), use_container_width=True)
 
 # Add CSS to prevent scroll lock and override tab navigation
 st.markdown("""
