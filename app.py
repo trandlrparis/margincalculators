@@ -13,16 +13,14 @@ codes_dict_bottom = {
     "Y": 0.05, "Z": 0.0
 }
 
-codes_dict = {**codes_dict_top, **codes_dict_bottom}
-
 st.set_page_config(layout="wide")
 st.markdown("# **FINANCIAL CALCULATOR**")
 
 # --- Selling Price by Margin ---
 with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
     with st.container():
-        total_cost = st.number_input("TOTAL COST", min_value=0.0, value=0.0, key="margin_total_cost")
-        margin = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=30.0, key="margin_margin")
+        total_cost = st.number_input("TOTAL COST", min_value=0.0, value=0.0)
+        margin = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=30.0)
 
         if margin < 100:
             selling_price = total_cost / (1 - margin / 100)
@@ -36,29 +34,29 @@ with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
 # --- Selling Price by Landed Cost ---
 with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
     with st.container():
-        item_cost = st.number_input("ITEM COST", min_value=0.0, value=0.0, key="landed_item")
-        shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, value=0.0, key="landed_shipping")
-        sample_cost = st.number_input("SAMPLE COST", min_value=0.0, value=0.0, key="landed_sample")
-        quantity = st.number_input("QTY", min_value=1, value=10, key="landed_qty")
-        margin2 = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=30.0, key="landed_margin")
+        item_cost = st.number_input("ITEM COST", min_value=0.0, value=0.0)
+        shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, value=0.0)
+        sample_cost = st.number_input("SAMPLE COST", min_value=0.0, value=0.0)
+        quantity = st.number_input("QTY", min_value=1, value=10)
+        margin2 = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=30.0)
 
         if quantity > 0 and margin2 < 100:
             total_cost = item_cost + shipping_cost + sample_cost
             unit_cost = total_cost / quantity
-            selling_price2 = (total_cost / (1 - margin2 / 100)) / quantity
-            profit2 = selling_price2 - unit_cost
+            unit_price = unit_cost / (1 - margin2 / 100)
+            profit2 = unit_price - unit_cost
         else:
-            unit_cost = selling_price2 = profit2 = 0.0
+            unit_cost = unit_price = profit2 = 0.0
 
-        st.metric("PRICE PER UNIT TOTAL COST", f"${unit_cost:.2f}")
-        st.metric("SELLING PRICE", f"${selling_price2:.2f}")
+        st.metric("UNIT COST", f"${unit_cost:.2f}")
+        st.metric("SELLING PRICE", f"${unit_price:.2f}")
         st.metric("PROFIT", f"${profit2:.2f}")
 
-# --- Margin by Price ---
+# --- Margin by Selling Price ---
 with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
     with st.container():
-        total_cost3 = st.number_input("TOTAL COST", min_value=0.0, value=0.0, key="margin_by_price_total")
-        price3 = st.number_input("SELLING PRICE", min_value=0.0, value=0.0, key="margin_by_price_price")
+        total_cost3 = st.number_input("TOTAL COST", min_value=0.0, value=0.0)
+        price3 = st.number_input("SELLING PRICE", min_value=0.0, value=0.0)
 
         if price3 > 0:
             profit3 = price3 - total_cost3
@@ -69,32 +67,38 @@ with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
         st.metric("MARGIN", f"{margin3:.2f}%")
         st.metric("PROFIT", f"${profit3:.2f}")
 
-# --- Vendor Pricing (Corrected as per R72:X75) ---
-with st.expander("CALCULATE MARGIN BY VENDOR PRICING", expanded=True):
+# --- Vendor Pricing (Based on R72:X75) ---
+with st.expander("CALCULATE VENDOR PRICING", expanded=True):
     with st.container():
-        unit_cost_v = st.number_input("UNIT COST", min_value=0.0, value=0.0, key="vendor_unit_cost")
-        shipping_cost_v = st.number_input("SHIPPING COST", min_value=0.0, value=0.0, key="vendor_shipping")
-        sample_cost_v = st.number_input("SAMPLE COST", min_value=0.0, value=0.0, key="vendor_sample")
-        price_v = st.number_input("SELLING PRICE", min_value=0.0, value=0.0, key="vendor_price")
-        discount_code_v = st.text_input("DISCOUNT CODE", key="vendor_discount").upper()
+        unit_cost_v = st.number_input("UNIT COST", min_value=0.0, value=0.0)
+        price_v = st.number_input("SELLING PRICE", min_value=0.0, value=0.0)
+        discount_code_v = st.text_input("DISCOUNT CODE").upper()
 
-        discount = codes_dict.get(discount_code_v, 0)
-        adjusted_price = price_v * (1 - discount)
-        total_cost_v = unit_cost_v + shipping_cost_v + sample_cost_v
-        profit_v = adjusted_price - total_cost_v
-        margin_v = (profit_v / adjusted_price * 100) if adjusted_price > 0 else 0
+        discount = codes_dict_top.get(discount_code_v, codes_dict_bottom.get(discount_code_v, 0))
+        discounted_price = price_v * (1 - discount)
+        margin_v = ((discounted_price - unit_cost_v) / discounted_price * 100) if discounted_price > 0 else 0
+        profit_v = discounted_price - unit_cost_v
 
-        st.metric("TOTAL COST", f"${total_cost_v:.2f}")
+        st.metric("DISCOUNTED PRICE", f"${discounted_price:.2f}")
         st.metric("MARGIN", f"{margin_v:.2f}%")
         st.metric("PROFIT", f"${profit_v:.2f}")
 
-# --- Discount Code Reference Table ---
+# --- Discount Code Reference Tables ---
 st.markdown("---")
 st.markdown("### DISCOUNT CODE REFERENCE")
 
-discount_table = pd.DataFrame({
-    "Code": list(codes_dict.keys()),
-    "Discount %": [int(v * 100) for v in codes_dict.values()]
+df_top = pd.DataFrame({
+    "Code": list(codes_dict_top.keys()),
+    "Discount %": [int(v * 100) for v in codes_dict_top.values()]
 })
 
-st.dataframe(discount_table.sort_values("Code").reset_index(drop=True), use_container_width=True, hide_index=True)
+df_bottom = pd.DataFrame({
+    "Code": list(codes_dict_bottom.keys()),
+    "Discount %": [int(v * 100) for v in codes_dict_bottom.values()]
+})
+
+st.markdown("#### Top Codes")
+st.dataframe(df_top.style.set_properties(**{'background-color': '#F5F5F5', 'border': '1px solid black'}), use_container_width=True)
+
+st.markdown("#### Bottom Codes")
+st.dataframe(df_bottom.style.set_properties(**{'background-color': '#F5F5F5', 'border': '1px solid black'}), use_container_width=True)
