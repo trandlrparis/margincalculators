@@ -92,34 +92,6 @@ with st.expander("CALCULATE VENDOR PRICING", expanded=True):
         st.metric("SELLING PRICE", f"${selling_price_vendor:.2f}")
         st.metric("PROFIT", f"${profit_vendor:.2f}")
 
-# --- Discount Code Reference Tables ---
-st.markdown("---")
-st.markdown("### DISCOUNT CODE REFERENCE")
-
-st.markdown("#### ABC System")
-df_top = pd.DataFrame({
-    "Code": list(codes_dict_top.keys()),
-    "Discount %": [int(v * 100) for v in codes_dict_top.values()]
-})
-
-st.dataframe(df_top.style.set_table_styles([
-    {'selector': 'th', 'props': [('background-color', '#DDEEFF'), ('color', 'black'), ('font-weight', 'bold')]},
-    {'selector': 'td', 'props': [('background-color', '#FFFFFF'), ('color', 'black')]},
-    {'selector': 'table', 'props': [('border', '2px solid #4477AA')]}
-]).hide(axis="index"), use_container_width=True)
-
-st.markdown("#### PQR System")
-df_bottom = pd.DataFrame({
-    "Code": list(codes_dict_bottom.keys()),
-    "Discount %": [int(v * 100) for v in codes_dict_bottom.values()]
-})
-
-st.dataframe(df_bottom.style.set_table_styles([
-    {'selector': 'th', 'props': [('background-color', '#FFEEDD'), ('color', 'black'), ('font-weight', 'bold')]},
-    {'selector': 'td', 'props': [('background-color', '#FFFFFF'), ('color', 'black')]},
-    {'selector': 'table', 'props': [('border', '2px solid #AA7744')]}
-]).hide(axis="index"), use_container_width=True)
-
 # Add CSS to prevent scroll lock and override tab navigation
 st.markdown("""
     <style>
