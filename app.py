@@ -92,6 +92,19 @@ with st.expander("CALCULATE VENDOR PRICING", expanded=True):
         st.metric("SELLING PRICE", f"${selling_price_vendor:.2f}")
         st.metric("PROFIT", f"${profit_vendor:.2f}")
 
+# --- Display Discount Codes ---
+st.markdown("### ABC System")
+abc_table = pd.DataFrame.from_dict(codes_dict_top, orient='index', columns=["Discount"]).reset_index()
+abc_table.columns = ["Code", "Discount"]
+abc_table["Discount"] = abc_table["Discount"].apply(lambda x: f"{int(x*100)}%")
+st.dataframe(abc_table, use_container_width=True, hide_index=True)
+
+st.markdown("### PQR System")
+pqr_table = pd.DataFrame.from_dict(codes_dict_bottom, orient='index', columns=["Discount"]).reset_index()
+pqr_table.columns = ["Code", "Discount"]
+pqr_table["Discount"] = pqr_table["Discount"].apply(lambda x: f"{int(x*100)}%")
+st.dataframe(pqr_table, use_container_width=True, hide_index=True)
+
 # Add CSS to prevent scroll lock and override tab navigation
 st.markdown("""
     <style>
