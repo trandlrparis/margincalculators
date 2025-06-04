@@ -1,4 +1,3 @@
-
 import streamlit as st
 import pandas as pd
 
@@ -14,8 +13,42 @@ codes_dict_bottom = {
     "Y": 0.05, "Z": 0.0
 }
 
+# Reset function
+def reset_fields():
+    st.session_state.clear()
+
 st.set_page_config(layout="wide")
+
+# Apply LR Paris style
+st.markdown("""
+    <style>
+        body, .block-container {
+            background-color: #f5f3f0;
+            color: #002855;
+        }
+        .stNumberInput > div > input {
+            background-color: #ffffff;
+            color: #002855;
+        }
+        .stButton > button {
+            background-color: #002855;
+            color: white;
+            border: none;
+            padding: 0.5em 1em;
+            border-radius: 5px;
+        }
+        .stMetricLabel, .stMetricValue {
+            color: #002855 !important;
+        }
+        .stExpanderHeader {
+            font-weight: bold;
+            color: #002855;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
 st.markdown("# **FINANCIAL CALCULATORS**")
+st.button("🔁 RESET ALL FIELDS", on_click=reset_fields)
 
 # --- Selling Price by Margin ---
 with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
@@ -39,11 +72,12 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
         shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, key="landed_shipping", value=None, placeholder="")
         sample_cost = st.number_input("SAMPLE COST", min_value=0.0, key="landed_sample", value=None, placeholder="")
         setup_cost = st.number_input("SETUP COST", min_value=0.0, key="landed_setup", value=None, placeholder="")
+        run_charge = st.number_input("RUN CHARGE", min_value=0.0, key="landed_run", value=None, placeholder="")
         quantity = st.number_input("QTY", min_value=1, key="landed_qty", value=None, placeholder="")
         margin2 = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="landed_margin", value=None, placeholder="")
 
-        if all(v is not None for v in [item_cost, shipping_cost, sample_cost, setup_cost, quantity, margin2]) and margin2 < 100:
-            unit_cost = (((item_cost * quantity) + shipping_cost + sample_cost + setup_cost)) / quantity
+        if all(v is not None for v in [item_cost, shipping_cost, sample_cost, setup_cost, run_charge, quantity, margin2]) and margin2 < 100:
+            unit_cost = (((item_cost * quantity) + shipping_cost + sample_cost + setup_cost + run_charge)) / quantity
             unit_price = unit_cost / (1 - margin2 / 100)
             profit2 = unit_price - unit_cost
         else:
@@ -106,21 +140,3 @@ pqr_table = pd.DataFrame.from_dict(codes_dict_bottom, orient='index', columns=["
 pqr_table.columns = ["Code", "Discount"]
 pqr_table["Discount"] = pqr_table["Discount"].apply(lambda x: f"{int(x*100)}%")
 st.dataframe(pqr_table, use_container_width=True, hide_index=True)
-
-# Add CSS to prevent scroll lock and override tab navigation
-st.markdown("""
-    <style>
-    .stNumberInput input[type=number]::-webkit-outer-spin-button,
-    .stNumberInput input[type=number]::-webkit-inner-spin-button {
-        -webkit-appearance: none;
-        margin: 0;
-    }
-    input:focus {
-        outline: 2px solid #4A90E2;
-    }
-    input, select, textarea {
-        tab-index: 0;
-    }
-    .block-container { overflow-y: auto; }
-    </style>
-""", unsafe_allow_html=True)
