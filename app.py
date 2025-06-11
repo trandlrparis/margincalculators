@@ -79,6 +79,7 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
         if all(v is not None for v in [item_cost, quantity, margin2]) and margin2 < 100:
             total_cost = ((item_cost + run_charge) * quantity + shipping_cost + sample_cost + setup_cost)
             unit_cost = total_cost / quantity
+            total_selling_price = unit_price * quantity
             unit_price = unit_cost / (1 - margin2 / 100)
             profit2 = unit_price - unit_cost
         else:
@@ -86,7 +87,7 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
 
         st.metric("UNIT COST", f"${unit_cost:.2f}")
         st.metric("TOTAL COST", f"${total_cost:.2f}")
-        st.metric("TOTAL SELLING PRICE", f"${unit_price * quantity:.2f}")
+        st.metric("TOTAL SELLING PRICE", f"${total_selling_price:.2f}")
         st.metric("SELLING PRICE", f"${unit_price:.2f}")
         st.metric("PROFIT", f"${profit2:.2f}")
 
