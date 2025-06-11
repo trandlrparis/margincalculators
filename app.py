@@ -17,10 +17,6 @@ codes_dict_bottom = {
 st.set_page_config(page_title="LR Paris Pricing Tool", layout="wide")
 st.title("LR Paris: Calculate Selling Price by Landed Cost")
 
-# Initialize variables with default safe values
-cost = run_charge = quantity = shipping = sample_cost = setup_cost = 0.0
-code_top = code_bottom = "X"
-
 with st.form("pricing_form"):
     col1, col2, col3 = st.columns(3)
 
@@ -48,19 +44,23 @@ if submit:
     discount_top = codes_dict_top.get(code_top, 0)
     discount_bottom = codes_dict_bottom.get(code_bottom, 0)
 
-    total_cost = (cost * quantity) + (run_charge * quantity) + shipping + sample_cost + setup_cost
-    unit_cost = total_cost / quantity
-    net_cost = unit_cost / (1 - discount_bottom) if (1 - discount_bottom) != 0 else 0
-    selling_price = net_cost / (1 - discount_top) if (1 - discount_top) != 0 else 0
+    # Failsafe calculations
+    try:
+        total_cost = (cost * quantity) + (run_charge * quantity) + shipping + sample_cost + setup_cost
+        unit_cost = total_cost / quantity if quantity else 0
+        net_cost = unit_cost / (1 - discount_bottom) if (1 - discount_bottom) != 0 else 0
+        selling_price = net_cost / (1 - discount_top) if (1 - discount_top) != 0 else 0
 
-    st.markdown("---")
-    st.subheader("Results")
-    col1, col2 = st.columns(2)
+        st.markdown("---")
+        st.subheader("Results")
+        col1, col2 = st.columns(2)
 
-    with col1:
-        st.metric("Total Cost (incl. all fees)", f"${total_cost:.2f}")
-        st.metric("Unit Cost", f"${unit_cost:.2f}")
+        with col1:
+            st.metric("Total Cost (incl. all fees)", f"${total_cost:.2f}")
+            st.metric("Unit Cost", f"${unit_cost:.2f}")
 
-    with col2:
-        st.metric("Net Cost", f"${net_cost:.2f}")
-        st.metric("Selling Price", f"${selling_price:.2f}")
+        with col2:
+            st.metric("Net Cost", f"${net_cost:.2f}")
+            st.metric("Selling Price", f"${selling_price:.2f}")
+    except Exception as e:
+        st.error(f"An error occurred: {e}")
