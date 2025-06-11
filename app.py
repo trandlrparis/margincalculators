@@ -4,21 +4,21 @@ import streamlit as st
 st.set_page_config(page_title="Selling Price Calculator", layout="wide")
 st.title("LR Paris: Selling Price Calculator")
 
-# Inputs using number_input to eliminate text parsing and re-render race conditions
+# Inputs using number_input with defaults for optional fields
 col1, col2, col3 = st.columns(3)
 
 with col1:
-    unit_cost = st.number_input("Unit Cost (USD)", min_value=0.0, step=0.01)
-    margin_pct = st.number_input("Desired Margin (%)", min_value=0.0, step=0.1)
+    unit_cost = st.number_input("Unit Cost (USD)", min_value=0.0, value=0.0, step=0.01)
+    margin_pct = st.number_input("Desired Margin (%)", min_value=0.0, value=0.0, step=0.1)
 
 with col2:
-    quantity = st.number_input("Quantity", min_value=1, step=1)
-    shipping = st.number_input("Shipping Total (USD)", min_value=0.0, step=0.01)
-    run_charge = st.number_input("Run Charge (USD per unit)", min_value=0.0, step=0.01)
+    quantity = st.number_input("Quantity", min_value=1, value=1, step=1)
+    shipping = st.number_input("Shipping Total (USD)", min_value=0.0, value=0.0, step=0.01)
+    run_charge = st.number_input("Run Charge (USD per unit)", min_value=0.0, value=0.0, step=0.01)
 
 with col3:
-    sample = st.number_input("Sample Cost (USD)", min_value=0.0, step=0.01)
-    setup = st.number_input("Setup Cost (USD)", min_value=0.0, step=0.01)
+    sample = st.number_input("Sample Cost (USD)", min_value=0.0, value=0.0, step=0.01)
+    setup = st.number_input("Setup Cost (USD)", min_value=0.0, value=0.0, step=0.01)
 
 # Run logic only if all three core fields are non-zero
 if unit_cost > 0 and margin_pct > 0 and quantity > 0:
