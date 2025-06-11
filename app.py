@@ -1,15 +1,4 @@
 
-def safe_float(value):
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return 0
-
-shipping = safe_float(shipping_input)
-setup = safe_float(setup_input)
-sample = safe_float(sample_input)
-run_charge = safe_float(run_charge_input)
-
 import streamlit as st
 import pandas as pd
 
