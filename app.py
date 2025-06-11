@@ -65,6 +65,7 @@ with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
         st.metric("SELLING PRICE", f"${selling_price:.2f}")
         st.metric("PROFIT", f"${profit:.2f}")
 
+
 # --- Selling Price by Landed Cost ---
 with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
     with st.container():
@@ -76,20 +77,24 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
         quantity = st.number_input("QTY", min_value=1, key="landed_qty", value=None, placeholder="")
         margin2 = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="landed_margin", value=None, placeholder="")
 
-        if all(v is not None for v in [item_cost, quantity, margin2]) and margin2 < 100:
+        if all(v is not None for v in [item_cost, run_charge, quantity, shipping_cost, sample_cost, setup_cost, margin2]) and margin2 < 100:
             total_cost = ((item_cost + run_charge) * quantity + shipping_cost + sample_cost + setup_cost)
             unit_cost = total_cost / quantity
-            total_selling_price = unit_price * quantity
             unit_price = unit_cost / (1 - margin2 / 100)
+            total_selling_price = unit_price * quantity
             profit2 = unit_price - unit_cost
-        else:
-            unit_cost = unit_price = profit2 = 0.0
 
-        st.metric("UNIT COST", f"${unit_cost:.2f}")
-        st.metric("TOTAL COST", f"${total_cost:.2f}")
-        st.metric("TOTAL SELLING PRICE", f"${total_selling_price:.2f}")
-        st.metric("SELLING PRICE", f"${unit_price:.2f}")
-        st.metric("PROFIT", f"${profit2:.2f}")
+            st.metric("UNIT COST", f"${unit_cost:.2f}")
+            st.metric("TOTAL COST", f"${total_cost:.2f}")
+            st.metric("SELLING PRICE", f"${unit_price:.2f}")
+            st.metric("TOTAL SELLING PRICE", f"${total_selling_price:.2f}")
+            st.metric("PROFIT", f"${profit2:.2f}")
+        else:
+            st.metric("UNIT COST", "$0.00")
+            st.metric("TOTAL COST", "$0.00")
+            st.metric("SELLING PRICE", "$0.00")
+            st.metric("TOTAL SELLING PRICE", "$0.00")
+            st.metric("PROFIT", "$0.00")
 
 # --- Margin by Selling Price ---
 with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
