@@ -17,20 +17,24 @@ codes_dict_bottom = {
 st.set_page_config(page_title="LR Paris Pricing Tool", layout="wide")
 st.title("LR Paris: Calculate Selling Price by Landed Cost")
 
+# Initialize variables with default safe values
+cost = run_charge = quantity = shipping = sample_cost = setup_cost = 0.0
+code_top = code_bottom = "X"
+
 with st.form("pricing_form"):
     col1, col2, col3 = st.columns(3)
 
     with col1:
-        cost = st.number_input("Landed Cost (per unit, USD)", min_value=0.0, step=0.01)
-        run_charge = st.number_input("Run Charge (USD per unit)", min_value=0.0, step=0.01)
+        cost = st.number_input("Landed Cost (per unit, USD)", min_value=0.0, step=0.01, value=0.0)
+        run_charge = st.number_input("Run Charge (USD per unit)", min_value=0.0, step=0.01, value=0.0)
 
     with col2:
-        quantity = st.number_input("Quantity", min_value=1, step=1)
-        shipping = st.number_input("Shipping Total (USD)", min_value=0.0, step=0.01)
+        quantity = st.number_input("Quantity", min_value=1, step=1, value=1)
+        shipping = st.number_input("Shipping Total (USD)", min_value=0.0, step=0.01, value=0.0)
 
     with col3:
-        sample_cost = st.number_input("Sample Cost (USD)", min_value=0.0, step=0.01)
-        setup_cost = st.number_input("Setup Cost (USD)", min_value=0.0, step=0.01)
+        sample_cost = st.number_input("Sample Cost (USD)", min_value=0.0, step=0.01, value=0.0)
+        setup_cost = st.number_input("Setup Cost (USD)", min_value=0.0, step=0.01, value=0.0)
         code_top = st.selectbox("Top Discount Code", options=list(codes_dict_top.keys()))
         code_bottom = st.selectbox("Bottom Discount Code", options=list(codes_dict_bottom.keys()))
 
@@ -46,8 +50,8 @@ if submit:
 
     total_cost = (cost * quantity) + (run_charge * quantity) + shipping + sample_cost + setup_cost
     unit_cost = total_cost / quantity
-    net_cost = unit_cost / (1 - discount_bottom)
-    selling_price = net_cost / (1 - discount_top)
+    net_cost = unit_cost / (1 - discount_bottom) if (1 - discount_bottom) != 0 else 0
+    selling_price = net_cost / (1 - discount_top) if (1 - discount_top) != 0 else 0
 
     st.markdown("---")
     st.subheader("Results")
