@@ -25,19 +25,29 @@ with col3:
     sample_input = st.text_input("Sample Cost (USD)", value="")
     setup_input = st.text_input("Setup Cost (USD)", value="")
 
-# Parse safely
-unit_cost = safe_float(unit_cost_input)
-margin_pct = safe_float(margin_pct_input)
-quantity = safe_float(quantity_input)
-shipping = safe_float(shipping_input)
-run_charge = safe_float(run_charge_input)
-sample = safe_float(sample_input)
-setup = safe_float(setup_input)
+# Show current input state
+st.markdown("#### Input Status")
+st.write({
+    "Unit Cost": unit_cost_input,
+    "Margin %": margin_pct_input,
+    "Quantity": quantity_input,
+    "Shipping": shipping_input,
+    "Run Charge": run_charge_input,
+    "Sample": sample_input,
+    "Setup": setup_input
+})
 
-# Check readiness
-required_fields_ready = unit_cost > 0 and margin_pct > 0 and quantity > 0
+# Only parse and calculate if core fields are filled
+if all([unit_cost_input.strip(), margin_pct_input.strip(), quantity_input.strip()]):
+    unit_cost = safe_float(unit_cost_input)
+    margin_pct = safe_float(margin_pct_input)
+    quantity = safe_float(quantity_input)
 
-if required_fields_ready:
+    shipping = safe_float(shipping_input)
+    run_charge = safe_float(run_charge_input)
+    sample = safe_float(sample_input)
+    setup = safe_float(setup_input)
+
     margin = margin_pct / 100
 
     shipping_per_unit = shipping / quantity if quantity else 0
@@ -45,7 +55,6 @@ if required_fields_ready:
     sample_per_unit = sample / quantity if quantity else 0
 
     landed_unit_cost = unit_cost + run_charge + shipping_per_unit + setup_per_unit + sample_per_unit
-
     selling_price = landed_unit_cost / (1 - margin) if (1 - margin) != 0 else 0.0
 
     total_revenue = selling_price * quantity
@@ -64,4 +73,4 @@ if required_fields_ready:
         st.metric("Total Revenue", f"${total_revenue:.2f}")
         st.metric("Profit", f"${profit:.2f}")
 else:
-    st.info("Enter Unit Cost, Margin (%), and Quantity to begin calculation.")
+    st.warning("Please enter values for Unit Cost, Margin (%), and Quantity.")
