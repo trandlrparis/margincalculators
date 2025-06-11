@@ -20,7 +20,20 @@ with col3:
     sample = st.number_input("Sample Cost (USD)", min_value=0.0, step=0.01)
     setup = st.number_input("Setup Cost (USD)", min_value=0.0, step=0.01)
 
-# Only calculate when all 3 required inputs are meaningfully entered
+
+# Guarded logic: wait for required fields and give feedback
+missing_inputs = []
+if unit_cost <= 0:
+    missing_inputs.append("Unit Cost")
+if margin_pct <= 0:
+    missing_inputs.append("Margin (%)")
+if quantity <= 0:
+    missing_inputs.append("Quantity")
+
+if missing_inputs:
+    st.warning(f"Waiting for: {', '.join(missing_inputs)}")
+else:
+
 if unit_cost > 0 and margin_pct > 0 and quantity > 0:
     margin = margin_pct / 100
 
