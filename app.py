@@ -153,10 +153,9 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
         sample_cost = st.number_input("SAMPLE COST", min_value=0.0, value=0.0, key="apparel_sample_cost")
         setup_cost = st.number_input("SETUP COST", min_value=0.0, value=0.0, key="apparel_setup_cost")
         margin_percent = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=40.0, key="apparel_margin")
-    if margin_percent is not None:
         margin = margin_percent / 100
-    else:
-        margin = 0total_units = qty_xxs_to_xl + qty_2xl + qty_3xl + qty_4xl
+
+        total_units = qty_xxs_to_xl + qty_2xl + qty_3xl + qty_4xl
         item_cost_total = (
             qty_xxs_to_xl * cost_xxs_to_xl +
             qty_2xl * cost_2xl +
@@ -222,3 +221,64 @@ pqr_table = pd.DataFrame.from_dict(codes_dict_bottom, orient='index', columns=["
 pqr_table.columns = ["Code", "Discount"]
 pqr_table["Discount"] = pqr_table["Discount"].apply(lambda x: f"{int(x*100)}%")
 st.dataframe(pqr_table, use_container_width=True, hide_index=True)
+
+# --- APPAREL SELLING PRICE TOOL ---
+with st.expander("🧥 CALCULATE APPAREL SELLING PRICE"):
+    st.markdown("### SIZE-BASED QUANTITIES AND COSTS")
+    qty_xxs_to_xl = st.number_input("XXS TO XL QTY", min_value=0, step=1, key="qty_xxs_to_xl")
+    cost_xxs_to_xl = st.number_input("XXS TO XL ITEM COST", min_value=0.0, step=0.01, key="cost_xxs_to_xl")
+
+    qty_2xl = st.number_input("2XL QTY", min_value=0, step=1, key="qty_2xl")
+    cost_2xl = st.number_input("2XL ITEM COST", min_value=0.0, step=0.01, key="cost_2xl")
+
+    qty_3xl = st.number_input("3XL QTY", min_value=0, step=1, key="qty_3xl")
+    cost_3xl = st.number_input("3XL ITEM COST", min_value=0.0, step=0.01, key="cost_3xl")
+
+    qty_4xl = st.number_input("4XL QTY", min_value=0, step=1, key="qty_4xl")
+    cost_4xl = st.number_input("4XL ITEM COST", min_value=0.0, step=0.01, key="cost_4xl")
+
+    st.markdown("### ADDITIONAL COSTS")
+    run_charge = st.number_input("RUN CHARGE", min_value=0.0, step=0.01, key="apparel_run_charge")
+    shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, step=0.01, key="apparel_shipping")
+    sample_cost = st.number_input("SAMPLE COST", min_value=0.0, step=0.01, key="apparel_sample")
+    setup_cost = st.number_input("SETUP COST", min_value=0.0, step=0.01, key="apparel_setup")
+    margin_percent = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=None, step=0.1, key="apparel_margin")
+
+    if margin_percent is not None:
+        margin = margin_percent / 100
+    else:
+        margin = 0
+
+    # CALCULATIONS
+    total_units = qty_xxs_to_xl + qty_2xl + qty_3xl + qty_4xl
+
+    item_cost_total = (
+        (qty_xxs_to_xl * cost_xxs_to_xl) +
+        (qty_2xl * cost_2xl) +
+        (qty_3xl * cost_3xl) +
+        (qty_4xl * cost_4xl)
+    )
+
+    run_charge_total = run_charge * total_units
+    additional_costs = shipping_cost + sample_cost + setup_cost + run_charge_total
+    all_in_cost = item_cost_total + additional_costs
+
+    if total_units > 0:
+        average_cost = all_in_cost / total_units
+        selling_price = average_cost / (1 - margin) if margin < 1 else 0
+        profit_per_unit = selling_price - average_cost
+        total_profit = profit_per_unit * total_units
+        average_selling_price = selling_price
+    else:
+        average_cost = 0
+        average_selling_price = 0
+        profit_per_unit = 0
+        total_profit = 0
+
+    # OUTPUTS
+    st.metric("TOTAL UNITS", total_units)
+    st.metric("ADDITIONAL COSTS", f"${additional_costs:,.2f}")
+    st.metric("AVERAGE COST PER UNIT", f"${average_cost:,.2f}")
+    st.metric("AVERAGE SELLING PRICE PER UNIT", f"${average_selling_price:,.2f}")
+    st.metric("PROFIT PER UNIT", f"${profit_per_unit:,.2f}")
+    st.metric("TOTAL PROFIT", f"${total_profit:,.2f}")
