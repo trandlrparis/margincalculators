@@ -145,8 +145,8 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
             total_selling_price = unit_price * quantity
             profit2 = unit_price - unit_cost
 
-            st.metric("UNIT COST", f"${unit_cost:.2f}")
-                    st.metric("ALL-IN COST (BEFORE MARGIN)", f"${pre_margin_cost:,.2f}")
+        st.metric("UNIT COST", f"${unit_cost:.2f}")
+        st.metric("ALL-IN COST (BEFORE MARGIN)", f"${pre_margin_cost:,.2f}")
         st.metric("SELLING PRICE (AFTER MARGIN)", f"${selling_price:,.2f}")
 
 
