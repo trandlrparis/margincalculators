@@ -140,11 +140,12 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
             cost_3xl = st.number_input("3XL UNIT COST", min_value=0.0, value=0.0, key="cost_3xl")
             cost_4xl = st.number_input("4XL UNIT COST", min_value=0.0, value=0.0, key="cost_4xl")
 
+        
         st.markdown("### ADDITIONAL COSTS")
+        run_charge = st.number_input("RUN CHARGE PER UNIT", min_value=0.0, value=0.0, key="apparel_run_charge")
         shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, value=0.0, key="apparel_shipping_cost")
         sample_cost = st.number_input("SAMPLE COST", min_value=0.0, value=0.0, key="apparel_sample_cost")
         setup_cost = st.number_input("SETUP COST", min_value=0.0, value=0.0, key="apparel_setup_cost")
-        run_charge = st.number_input("RUN CHARGE PER UNIT", min_value=0.0, value=0.0, key="apparel_run_charge")
         margin_percent = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=40.0, key="apparel_margin")
         margin = margin_percent / 100
 
@@ -165,6 +166,8 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
         st.metric("TOTAL UNITS", f"{total_units}")
         st.metric("ITEM COST TOTAL", f"${item_cost_total:,.2f}")
         st.metric("RUN CHARGE TOTAL", f"${run_charge_total:,.2f}")
+        additional_costs = shipping_cost + sample_cost + setup_cost
+        st.metric("ADDITIONAL COSTS TOTAL", f"${additional_costs:,.2f}")
         st.metric("ALL-IN COST (BEFORE MARGIN)", f"${pre_margin_cost:,.2f}")
         st.metric("SELLING PRICE (AFTER MARGIN)", f"${selling_price:,.2f}")
 
