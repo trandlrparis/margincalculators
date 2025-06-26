@@ -15,8 +15,33 @@ codes_dict_bottom = {
 
 # Reset function
 def reset_fields():
-    for key in list(st.session_state.keys()):
-        del st.session_state[key]
+    st.session_state["margin_total_cost"] = None
+    st.session_state["margin_margin"] = None
+    st.session_state["cost_margin"] = None
+    st.session_state["price_margin"] = None
+    st.session_state["landed_item"] = None
+    st.session_state["landed_shipping"] = None
+    st.session_state["landed_sample"] = None
+    st.session_state["landed_setup"] = None
+    st.session_state["landed_run"] = None
+    st.session_state["landed_qty"] = None
+    st.session_state["landed_margin"] = None
+    st.session_state["qty_xxs_to_xl"] = None
+    st.session_state["qty_2xl"] = None
+    st.session_state["qty_3xl"] = None
+    st.session_state["qty_4xl"] = None
+    st.session_state["cost_xxs_to_xl"] = None
+    st.session_state["cost_2xl"] = None
+    st.session_state["cost_3xl"] = None
+    st.session_state["cost_4xl"] = None
+    st.session_state["apparel_shipping_cost"] = None
+    st.session_state["apparel_sample_cost"] = None
+    st.session_state["apparel_setup_cost"] = None
+    st.session_state["apparel_run_charge"] = None
+    st.session_state["apparel_margin"] = None
+    st.session_state["vendor_net"] = None
+    st.session_state["vendor_top"] = None
+    st.session_state["vendor_bottom"] = None
 
 st.set_page_config(layout="wide")
 
@@ -77,6 +102,9 @@ with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
             selling_price = profit = 0.0
 
         st.metric("SELLING PRICE", f"${selling_price:.2f}")
+        st.metric("PROFIT PER UNIT", f"${profit_per_unit:.2f}")
+        st.metric("TOTAL PROFIT", f"${total_profit:.2f}")
+        st.metric("ADDITIONAL COSTS TOTAL", f"${additional_costs:.2f}")
         st.metric("PROFIT", f"${profit:.2f}")
 
 
@@ -107,6 +135,10 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
         margin2 = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="landed_margin", value=None, placeholder="")
 
         if all(v is not None for v in [item_cost, run_charge, quantity, shipping_cost, sample_cost, setup_cost, margin2]) and margin2 < 100:
+            additional_costs = shipping_cost + sample_cost + setup_cost
+            profit = selling_price - total_cost
+            profit_per_unit = profit / quantity if quantity else 0
+            total_profit = profit
             total_cost = ((item_cost + run_charge) * quantity + shipping_cost + sample_cost + setup_cost)
             unit_cost = total_cost / quantity
             unit_price = unit_cost / (1 - margin2 / 100)
