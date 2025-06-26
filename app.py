@@ -155,7 +155,10 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
         margin_percent = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=40.0, key="apparel_margin")
         if margin_percent is not None:
     if margin_percent is not None:
-    margin = margin_percent / 100
+    if margin_percent is not None:
+        margin = margin_percent / 100
+    else:
+        margin = 0
 else:
     margin = 0
 else:
