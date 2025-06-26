@@ -14,8 +14,11 @@ codes_dict_bottom = {
 }
 
 # Reset function
+
 def reset_fields():
-    st.session_state.clear()
+    for key in list(st.session_state.keys()):
+        if isinstance(st.session_state[key], (int, float, str)):
+            st.session_state[key] = None
 
 st.set_page_config(layout="wide")
 
@@ -96,7 +99,7 @@ with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
 
 
 # --- Selling Price by Landed Cost ---
-with st.expander("3️⃣ CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
+with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
     with st.container():
         item_cost = st.number_input("ITEM COST", min_value=0.0, key="landed_item", value=None, placeholder="")
         shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, key="landed_shipping", value=0.0, placeholder="")
