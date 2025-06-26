@@ -14,33 +14,51 @@ codes_dict_bottom = {
 }
 
 # Reset function
-
 def reset_fields():
     for key in list(st.session_state.keys()):
         del st.session_state[key]
-
 
 st.set_page_config(layout="wide")
 
 # Apply LR Paris style
 st.markdown("""
-    
     <style>
-        .stNumberInput input,
-        .stTextInput input,
-        .stDateInput input,
-        .stSelectbox div {
-            pointer-events: auto !important;
-            -webkit-overflow-scrolling: touch;
+        body, .block-container {
+            background-color: #f5f3f0;
+            color: #002855;
         }
+        .stNumberInput > div > input {
+            background-color: #ffffff;
+            color: #002855;
+        }
+        .stButton > button {
+            background-color: #002855;
+            color: white;
+            border: none;
+            padding: 0.5em 1em;
+            border-radius: 5px;
+        }
+        .stMetricLabel, .stMetricValue {
+            color: #002855 !important;
+        }
+        .stExpanderHeader {
+            font-weight: bold;
+            color: #002855;
+        }
+    
         input[type=number]::-webkit-inner-spin-button {
             opacity: 1 !important;
+        }
+        input, select, textarea {
+            pointer-events: auto !important;
+        }
+        .stNumberInput input:focus {
+            pointer-events: auto !important;
         }
         .stNumberInput {
             overflow: visible !important;
         }
-    </style>
-
+</style>
 """, unsafe_allow_html=True)
 
 st.markdown("# **FINANCIAL CALCULATORS**")
