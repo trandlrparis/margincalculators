@@ -236,7 +236,8 @@ with st.expander("🧥 CALCULATE APPAREL SELLING PRICE"):
 
     cost_4xl = st.number_input("4XL ITEM COST", min_value=0.0, step=0.01, key="cost_4xl")
     qty_4xl = st.number_input("4XL QTY", min_value=0, step=1, key="qty_4xl")
-    st.markdown("### ADDITIONAL COSTS")    shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, step=0.01, key="apparel_shipping")
+    st.markdown("### ADDITIONAL COSTS")
+    shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, step=0.01, key="apparel_shipping")
     sample_cost = st.number_input("SAMPLE COST", min_value=0.0, step=0.01, key="apparel_sample")
     setup_cost = st.number_input("SETUP COST", min_value=0.0, step=0.01, key="apparel_setup")
     margin_percent = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=None, step=0.1, key="apparel_margin")
