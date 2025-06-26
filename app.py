@@ -114,7 +114,7 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
 # --- Apparel Selling Price Tool ---
 with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
     with st.container():
-        st.markdown("### Size-Based Quantities and Costs")
+        st.markdown("### SIZE-BASED QUANTITIES AND COSTS")
         col1, col2 = st.columns(2)
         with col1:
             qty_xxs_to_xl = st.number_input("XXS–XL Quantity", min_value=0, value=0, key="qty_xxs_to_xl")
@@ -127,7 +127,7 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
             cost_3xl = st.number_input("3XL Unit Cost", min_value=0.0, value=0.0, key="cost_3xl")
             cost_4xl = st.number_input("4XL Unit Cost", min_value=0.0, value=0.0, key="cost_4xl")
 
-        st.markdown("### Additional Costs")
+        st.markdown("### ADDITIONAL COSTS")
         shipping_cost = st.number_input("Shipping Cost", min_value=0.0, value=0.0, key="apparel_shipping_cost")
         sample_cost = st.number_input("Sample Cost", min_value=0.0, value=0.0, key="apparel_sample_cost")
         setup_cost = st.number_input("Setup Cost", min_value=0.0, value=0.0, key="apparel_setup_cost")
@@ -147,15 +147,15 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
 
         selling_price = pre_margin_cost / (1 - margin) if (1 - margin) > 0 else 0.0
 
-        st.markdown(f"**Total Units:** {total_units}")
-        st.markdown(f"**Item Cost Total:** ${item_cost_total:,.2f}")
-        st.markdown(f"**Run Charge Total:** ${run_charge_total:,.2f}")
-        st.markdown(f"**All-In Cost (Before Margin):** ${pre_margin_cost:,.2f}")
-        st.markdown(f"**Selling Price (After Margin):** ${selling_price:,.2f}")
+        st.metric("TOTAL UNITS", f"{total_units}")
+        st.metric("ITEM COST TOTAL", f"${item_cost_total:,.2f}")
+        st.metric("RUN CHARGE TOTAL", f"${run_charge_total:,.2f}")
+        st.metric("ALL-IN COST (BEFORE MARGIN)", f"${pre_margin_cost:,.2f}")
+        st.metric("SELLING PRICE (AFTER MARGIN)", f"${selling_price:,.2f}")
 
 
 
-        st.metric("TOTAL AVERAGE COST PER UNIT", f"${pre_margin_cost / total_units:.2f}" if total_units else "$0.00")
+        st.metric("AVERAGE COST PER UNIT", f"${pre_margin_cost / total_units:.2f}" if total_units else "$0.00")
         st.metric("AVERAGE SELLING PRICE PER UNIT", f"${selling_price / total_units:.2f}" if total_units else "$0.00")
 # --- Vendor Pricing ---
 with st.expander("CALCULATE VENDOR PRICING", expanded=True):
