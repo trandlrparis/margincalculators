@@ -64,7 +64,18 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 st.markdown("# **FINANCIAL CALCULATORS**")
-st.button("🔁 RESET ALL FIELDS", on_click=reset_fields)
+
+if st.button("RESET ALL FIELDS"):
+    keys_to_clear = [
+        "item_cost", "quantity", "run_charge", "shipping_cost",
+        "sample_cost", "setup_cost", "margin_percent",
+        "qty_xxs_to_xl", "cost_xxs_to_xl", "qty_2xl", "cost_2xl",
+        "qty_3xl", "cost_3xl", "qty_4xl", "cost_4xl", "apparel_margin"
+    ]
+    for key in keys_to_clear:
+        if key in st.session_state:
+            del st.session_state[key]
+    st.experimental_rerun()
 
 # --- Selling Price by Margin ---
 with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
