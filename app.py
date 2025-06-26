@@ -16,7 +16,7 @@ codes_dict_bottom = {
 # Reset function
 
 def reset_fields():
-    for key in st.session_state.keys():
+    for key in list(st.session_state.keys()):
         del st.session_state[key]
 
 
@@ -26,19 +26,18 @@ st.set_page_config(layout="wide")
 st.markdown("""
     
     <style>
-        /* Full override for scroll usability */
         .stNumberInput input,
-        .stSelectbox div,
         .stTextInput input,
-        .stDateInput input {
+        .stDateInput input,
+        .stSelectbox div {
             pointer-events: auto !important;
             -webkit-overflow-scrolling: touch;
         }
-        .stNumberInput {
-            overflow: visible !important;
-        }
         input[type=number]::-webkit-inner-spin-button {
             opacity: 1 !important;
+        }
+        .stNumberInput {
+            overflow: visible !important;
         }
     </style>
 
