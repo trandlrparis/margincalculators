@@ -98,11 +98,11 @@ with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
 with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
     with st.container():
         item_cost = st.number_input("ITEM COST", min_value=0.0, key="landed_item", value=None, placeholder="")
+        quantity = st.number_input("QTY", min_value=1, key="landed_qty", value=None, placeholder="")
+        run_charge = st.number_input("RUN CHARGE", min_value=0.0, key="landed_run", value=0.0, placeholder="")
         shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, key="landed_shipping", value=0.0, placeholder="")
         sample_cost = st.number_input("SAMPLE COST", min_value=0.0, key="landed_sample", value=0.0, placeholder="")
         setup_cost = st.number_input("SETUP COST", min_value=0.0, key="landed_setup", value=0.0, placeholder="")
-        run_charge = st.number_input("RUN CHARGE", min_value=0.0, key="landed_run", value=0.0, placeholder="")
-        quantity = st.number_input("QTY", min_value=1, key="landed_qty", value=None, placeholder="")
         margin2 = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="landed_margin", value=None, placeholder="")
 
         if all(v is not None for v in [item_cost, run_charge, quantity, shipping_cost, sample_cost, setup_cost, margin2]) and margin2 < 100:
