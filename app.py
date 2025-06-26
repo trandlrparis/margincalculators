@@ -152,7 +152,7 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
         shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, value=0.0, key="apparel_shipping_cost")
         sample_cost = st.number_input("SAMPLE COST", min_value=0.0, value=0.0, key="apparel_sample_cost")
         setup_cost = st.number_input("SETUP COST", min_value=0.0, value=0.0, key="apparel_setup_cost")
-        margin_percent = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=40.0, key="apparel_margin")
+        margin_percent = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=None, key="apparel_margin")
         margin = margin_percent / 100
 
         total_units = qty_xxs_to_xl + qty_2xl + qty_3xl + qty_4xl
@@ -225,21 +225,18 @@ st.dataframe(pqr_table, use_container_width=True, hide_index=True)
 # --- APPAREL SELLING PRICE TOOL ---
 with st.expander("🧥 CALCULATE APPAREL SELLING PRICE"):
     st.markdown("### SIZE-BASED QUANTITIES AND COSTS")
-    qty_xxs_to_xl = st.number_input("XXS TO XL QTY", min_value=0, step=1, key="qty_xxs_to_xl")
     cost_xxs_to_xl = st.number_input("XXS TO XL ITEM COST", min_value=0.0, step=0.01, key="cost_xxs_to_xl")
+    qty_xxs_to_xl = st.number_input("XXS TO XL QTY", min_value=0, step=1, key="qty_xxs_to_xl")
 
-    qty_2xl = st.number_input("2XL QTY", min_value=0, step=1, key="qty_2xl")
     cost_2xl = st.number_input("2XL ITEM COST", min_value=0.0, step=0.01, key="cost_2xl")
+    qty_2xl = st.number_input("2XL QTY", min_value=0, step=1, key="qty_2xl")
 
-    qty_3xl = st.number_input("3XL QTY", min_value=0, step=1, key="qty_3xl")
     cost_3xl = st.number_input("3XL ITEM COST", min_value=0.0, step=0.01, key="cost_3xl")
+    qty_3xl = st.number_input("3XL QTY", min_value=0, step=1, key="qty_3xl")
 
-    qty_4xl = st.number_input("4XL QTY", min_value=0, step=1, key="qty_4xl")
     cost_4xl = st.number_input("4XL ITEM COST", min_value=0.0, step=0.01, key="cost_4xl")
-
-    st.markdown("### ADDITIONAL COSTS")
-    run_charge = st.number_input("RUN CHARGE", min_value=0.0, step=0.01, key="apparel_run_charge")
-    shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, step=0.01, key="apparel_shipping")
+    qty_4xl = st.number_input("4XL QTY", min_value=0, step=1, key="qty_4xl")
+    st.markdown("### ADDITIONAL COSTS")    shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, step=0.01, key="apparel_shipping")
     sample_cost = st.number_input("SAMPLE COST", min_value=0.0, step=0.01, key="apparel_sample")
     setup_cost = st.number_input("SETUP COST", min_value=0.0, step=0.01, key="apparel_setup")
     margin_percent = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=None, step=0.1, key="apparel_margin")
