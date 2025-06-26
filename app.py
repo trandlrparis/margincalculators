@@ -76,7 +76,7 @@ with st.expander('CALCULATE APPAREL SELLING PRICE', expanded=False):
         )
         additional_costs = shipping_cost + sample_cost + setup_cost + (run_charge * total_units)
     total_cost = item_cost_total + additional_costs if 'additional_costs' in locals() else item_cost_total
-        margin = margin_percent / 100 if margin_percent is not None else 0
+    margin = margin_percent / 100 if margin_percent is not None else 0
         avg_cost_per_unit = total_cost / total_units if total_units else 0
         avg_selling_price_per_unit = avg_cost_per_unit / (1 - margin) if margin < 1 else 0
         profit_per_unit = avg_selling_price_per_unit - avg_cost_per_unit
