@@ -152,14 +152,7 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
         shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, value=0.0, key="apparel_shipping_cost")
         sample_cost = st.number_input("SAMPLE COST", min_value=0.0, value=0.0, key="apparel_sample_cost")
         setup_cost = st.number_input("SETUP COST", min_value=0.0, value=0.0, key="apparel_setup_cost")
-        margin_percent = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=40.0, key="apparel_margin")
-        if margin_percent is not None:
-    if margin_percent is not None:else:
-    margin = 0
-else:
-    margin = 0
-
-        total_units = qty_xxs_to_xl + qty_2xl + qty_3xl + qty_4xl
+        margin_percent = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=40.0, key="apparel_margin")total_units = qty_xxs_to_xl + qty_2xl + qty_3xl + qty_4xl
         item_cost_total = (
             qty_xxs_to_xl * cost_xxs_to_xl +
             qty_2xl * cost_2xl +
