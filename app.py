@@ -102,10 +102,7 @@ with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
             selling_price = profit = 0.0
 
         st.metric("SELLING PRICE", f"${selling_price:.2f}")
-        st.metric("PROFIT PER UNIT", f"${profit_per_unit:.2f}")
-        st.metric("TOTAL PROFIT", f"${total_profit:.2f}")
-        st.metric("ADDITIONAL COSTS TOTAL", f"${additional_costs:.2f}")
-        st.metric("PROFIT", f"${profit:.2f}")
+                                st.metric("PROFIT", f"${profit:.2f}")
 
 
 # --- Margin by Selling Price ---
@@ -154,9 +151,7 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
         st.metric("AVERAGE COST PER UNIT", f"${pre_margin_cost / total_units:.2f}" if total_units else "$0.00")
         st.metric("AVERAGE SELLING PRICE PER UNIT", f"${selling_price / total_units:.2f}" if total_units else "$0.00")
 
-        st.metric("PROFIT PER UNIT", f"${profit_per_unit:.2f}")
-        st.metric("TOTAL PROFIT", f"${total_profit:.2f}")# --- Vendor Pricing ---
-with st.expander("CALCULATE VENDOR PRICING", expanded=True):
+                with st.expander("CALCULATE VENDOR PRICING", expanded=True):
     with st.container():
         vendor_price = st.number_input("VENDOR PRICE", min_value=0.0, key="vendor_price", value=None, placeholder="")
         discount_code = st.text_input("DISCOUNT CODE", key="discount_code").upper()
