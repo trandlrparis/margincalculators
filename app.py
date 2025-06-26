@@ -15,7 +15,8 @@ with st.expander('CALCULATE SELLING PRICE BY MARGIN', expanded=False):
         try:
             selling_price = cost / (1 - margin)
             st.metric('SELLING PRICE', f'${selling_price:,.2f}')
-            except ZeroDivisionError:
+# ERROR: 'except' without a 'try'
+#             except ZeroDivisionError:
                 st.error('Margin cannot be 100%')
 
                 # TOOL 2: Calculate Margin by Selling Price
