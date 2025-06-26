@@ -114,7 +114,7 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
 # --- Apparel Selling Price Tool ---
 with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
     with st.container():
-        st.markdown("### Size-Based Quantity and Cost Inputs")
+        st.markdown("### Size-Based Quantities and Costs")
         col1, col2 = st.columns(2)
         with col1:
             qty_xxs_to_xl = st.number_input("XXS–XL Quantity", min_value=0, value=0, key="qty_xxs_to_xl")
@@ -127,12 +127,13 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
             cost_3xl = st.number_input("3XL Unit Cost", min_value=0.0, value=0.0, key="cost_3xl")
             cost_4xl = st.number_input("4XL Unit Cost", min_value=0.0, value=0.0, key="cost_4xl")
 
-        st.markdown("### Additional Cost Inputs")
+        st.markdown("### Additional Costs")
         shipping_cost = st.number_input("Shipping Cost", min_value=0.0, value=0.0, key="apparel_shipping_cost")
         sample_cost = st.number_input("Sample Cost", min_value=0.0, value=0.0, key="apparel_sample_cost")
         setup_cost = st.number_input("Setup Cost", min_value=0.0, value=0.0, key="apparel_setup_cost")
         run_charge = st.number_input("Run Charge per Unit", min_value=0.0, value=0.0, key="apparel_run_charge")
-        margin = st.number_input("Margin (e.g., 0.4 for 40%)", min_value=0.0, max_value=0.99, value=0.4, key="apparel_margin")
+        margin_percent = st.number_input("Margin %", min_value=0.0, max_value=99.9, value=40.0, key="apparel_margin")
+        margin = margin_percent / 100
 
         total_units = qty_xxs_to_xl + qty_2xl + qty_3xl + qty_4xl
         item_cost_total = (
@@ -153,6 +154,9 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
         st.markdown(f"**Selling Price (After Margin):** ${selling_price:,.2f}")
 
 
+
+        st.metric("TOTAL AVERAGE COST PER UNIT", f"${pre_margin_cost / total_units:.2f}" if total_units else "$0.00")
+        st.metric("AVERAGE SELLING PRICE PER UNIT", f"${selling_price / total_units:.2f}" if total_units else "$0.00")
 # --- Vendor Pricing ---
 with st.expander("CALCULATE VENDOR PRICING", expanded=True):
     with st.container():
