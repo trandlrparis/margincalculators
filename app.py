@@ -80,34 +80,26 @@ st.markdown("""
             font-weight: bold;
             color: #002855;
         }
+        /* Disable scroll wheel on number inputs */
+        input[type=number]::-webkit-outer-spin-button,
+        input[type=number]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+        /* This is the key - disable pointer events on scroll for number inputs */
+        .stNumberInput input[type="number"] {
+            pointer-events: none;
+        }
+        .stNumberInput input[type="number"]:focus {
+            pointer-events: auto;
+        }
+        .stNumberInput:hover input[type="number"] {
+            pointer-events: auto;
+        }
     </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Function to disable scroll on number inputs
-            function disableScrollOnNumberInputs() {
-                const numberInputs = document.querySelectorAll('input[type="number"]');
-                numberInputs.forEach(function(input) {
-                    input.addEventListener('wheel', function(e) {
-                        e.preventDefault();
-                        return false;
-                    }, { passive: false });
-                });
-            }
-            
-            // Initial setup
-            disableScrollOnNumberInputs();
-            
-            // Re-run when new elements are added (Streamlit dynamic updates)
-            const observer = new MutationObserver(function(mutations) {
-                disableScrollOnNumberInputs();
-            });
-            
-            observer.observe(document.body, {
-                childList: true,
-                subtree: true
-            });
-        });
-    </script>
 """, unsafe_allow_html=True)
 
 st.markdown("# **FINANCIAL CALCULATORS**")
