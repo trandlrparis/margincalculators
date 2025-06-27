@@ -13,9 +13,15 @@ codes_dict_bottom = {
     "Y": 0.05, "Z": 0.0
 }
 
-# Reset function
+# Reset function - only clear input fields, not calculated outputs
 def reset_fields():
-    st.session_state.clear()
+    keys_to_clear = [key for key in st.session_state.keys() 
+                     if not key.startswith('FormSubmitter:') and 
+                     not key.startswith('_') and
+                     key != 'reset_button']
+    for key in keys_to_clear:
+        if key in st.session_state:
+            del st.session_state[key]
 
 st.set_page_config(layout="wide")
 
@@ -153,26 +159,45 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
     st.metric("TOTAL PROFIT", f"${total_profit:,.2f}")
 
 # --- Vendor Pricing ---
-with st.expander("VENDOR PRICING", expanded=False):
-    base_price = st.number_input("BASE PRICE", min_value=0.0, step=0.01, key="vendor_base_price", value=0.0)
-    markup_percent = st.number_input("MARKUP %", min_value=0.0, max_value=100.0, step=0.1, key="vendor_markup_percent", value=0.0)
-    vendor_price = base_price * (1 + markup_percent/100)
-    st.metric("VENDOR PRICE", f"${vendor_price:,.2f}")
+with st.expander("CALCULATE VENDOR PRICING", expanded=True):
+    with st.container():
+        vendor_price = st.number_input("VENDOR PRICE", min_value=0.0, key="vendor_price", value=None, placeholder="")
+        discount_code = st.text_input("DISCOUNT CODE", key="discount_code").upper()
+
+        discount = codes_dict_top.get(discount_code, codes_dict_bottom.get(discount_code, 0))
+
+        if vendor_price is not None:
+            unit_cost_vendor = vendor_price * (1 - discount)
+        else:
+            unit_cost_vendor = 0.0
+
+        st.metric("UNIT COST", f"${unit_cost_vendor:.2f}")
+
+        margin_vendor = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="margin_vendor", value=None, placeholder="")
+
+        if unit_cost_vendor > 0 and margin_vendor is not None and margin_vendor < 100:
+            selling_price_vendor = unit_cost_vendor / (1 - margin_vendor / 100)
+            profit_vendor = selling_price_vendor - unit_cost_vendor
+        else:
+            selling_price_vendor = profit_vendor = 0.0
+
+        st.metric("SELLING PRICE", f"${selling_price_vendor:.2f}")
+        st.metric("PROFIT", f"${profit_vendor:.2f}")
 
 # --- Discount Codes Reference ---
 with st.expander("REFERENCE: DISCOUNT CODES", expanded=False):
-    st.markdown('''
-    **ABC SYSTEM DISCOUNTS**
-    - A: 1000 pcs or more
-    - B: 500–999 pcs
-    - C: 250–499 pcs
-    - D: 100–249 pcs
-
-    **PQR SYSTEM DISCOUNTS**
-    - P100: 0%
-    - P80: 20%
-    - P60: 40%
-    - P50: 50%
-    - P40: 60%
-    - P30: 70%
-    ''')
+    col1, col2 = st.columns(2)
+    
+    with col1:
+        st.markdown("**ABC SYSTEM**")
+        abc_table = pd.DataFrame.from_dict(codes_dict_top, orient='index', columns=["Discount"]).reset_index()
+        abc_table.columns = ["Code", "Discount"]
+        abc_table["Discount"] = abc_table["Discount"].apply(lambda x: f"{int(x*100)}%")
+        st.dataframe(abc_table, use_container_width=True, hide_index=True)
+    
+    with col2:
+        st.markdown("**PQR SYSTEM**")
+        pqr_table = pd.DataFrame.from_dict(codes_dict_bottom, orient='index', columns=["Discount"]).reset_index()
+        pqr_table.columns = ["Code", "Discount"]
+        pqr_table["Discount"] = pqr_table["Discount"].apply(lambda x: f"{int(x*100)}%")
+        st.dataframe(pqr_table, use_container_width=True, hide_index=True)
