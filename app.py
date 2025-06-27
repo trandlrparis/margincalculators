@@ -15,8 +15,10 @@ codes_dict_bottom = {
 
 # Reset function
 def reset_fields():
-    st.session_state.clear()
-
+    # Clear only user input session state keys
+    for key in list(st.session_state.keys()):
+        del st.session_state[key]
+    st.experimental_rerun()
 st.set_page_config(layout="wide")
 
 # Apply LR Paris style
@@ -112,7 +114,7 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
             st.metric("PROFIT", "$0.00")
 
 # --- Apparel Selling Price Tool ---
-with st.expander("🧥 CALCULATE APPAREL SELLING PRICE", expanded=False):
+with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
     with st.container():
         st.markdown("### ITEM COST PER SIZE")
         cost_xxs_to_xl = st.number_input("XXS TO XL ITEM COST", min_value=0.0, step=0.01, key="cost_xxs_to_xl")
@@ -134,7 +136,7 @@ with st.expander("🧥 CALCULATE APPAREL SELLING PRICE", expanded=False):
 
         margin_percent = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=0.0, key="apparel_margin")
 
-        if any([cost_xxs_to_xl, cost_2xl, cost_3xl, cost_4xl, qty_xxs_to_xl, qty_2xl, qty_3xl, qty_4xl]):
+        if True:
             total_units = qty_xxs_to_xl + qty_2xl + qty_3xl + qty_4xl
             item_cost_total = (
                 (cost_xxs_to_xl * qty_xxs_to_xl) +
