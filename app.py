@@ -88,17 +88,31 @@ st.button("🔁 RESET ALL FIELDS", on_click=reset_fields)
 
 # --- Selling Price by Margin ---
 with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
-            total_cost = st.number_input("TOTAL COST", min_value=0.0, key="margin_total_cost", value=None, placeholder="")
-            margin = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="margin_margin", value=None, placeholder="")
+    total_cost = st.number_input(
+        "TOTAL COST",
+        min_value=0.0,
+        key="margin_total_cost",
+        value=None,
+        placeholder=""
+    )
+    margin = st.number_input(
+        "MARGIN %",
+        min_value=0.0,
+        max_value=99.9,
+        key="margin_margin",
+        value=None,
+        placeholder=""
+    )
 
-            if total_cost is not None and margin is not None and margin < 100:
-            selling_price = total_cost / (1 - margin / 100)
-            profit = selling_price - total_cost
-            else:
-            selling_price = profit = 0.0
+    if total_cost is not None and margin is not None and margin < 100:
+        selling_price = total_cost / (1 - margin / 100)
+        profit = selling_price - total_cost
+    else:
+        selling_price = profit = 0.0
 
-        st.metric("SELLING PRICE", f"${selling_price:.2f}")
-        st.metric("PROFIT", f"${profit:.2f}")
+    st.metric("SELLING PRICE", f"${selling_price:.2f}")
+    st.metric("PROFIT", f"${profit:.2f}")
+
 
 # --- Margin by Selling Price ---
 with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
