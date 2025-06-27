@@ -1,4 +1,35 @@
 import streamlit as st
+import streamlit as st
+
+# --- Defaults capture for RESET ALL FIELDS ---
+input_keys = [
+    'cost_margin', 'margin_margin',
+    'cost_margin2', 'selling_margin2',
+    'lc_item_cost', 'lc_quantity', 'lc_run_charge',
+    'lc_shipping_cost', 'lc_sample_cost', 'lc_setup_cost', 'lc_margin',
+    'cost_xxs_to_xl', 'cost_2xl', 'cost_3xl', 'cost_4xl',
+    'qty_xxs_to_xl', 'qty_2xl', 'qty_3xl', 'qty_4xl',
+    'apparel_shipping', 'apparel_sample', 'apparel_setup', 'apparel_run', 'apparel_margin'
+]
+if 'defaults' not in st.session_state:
+    st.session_state['defaults'] = {key: st.session_state.get(key) for key in input_keys}
+    st.session_state['defaults_captured'] = True
+
+
+def reset_all_fields():
+    # Clear user input keys
+    for key in list(st.session_state.keys()):
+        if key.startswith("cost_") or key.startswith("qty_") or key.endswith("_margin"):
+            del st.session_state[key]
+    # Rerun to apply cleared inputs
+    try:
+        st.experimental_rerun()
+    except:
+        pass
+
+st.button("🔄 RESET ALL FIELDS", on_click=reset_all_fields)
+
+
 import pandas as pd
 
 # Discount blocks
@@ -15,9 +46,14 @@ codes_dict_bottom = {
 
 # Reset function
 def reset_fields():
-    st.session_state.clear()
-
-st.set_page_config(layout="wide")
+    # Clear only user input session state
+    for key in list(st.session_state.keys()):
+        if key != '_':
+            del st.session_state[key]
+    try:
+        st.experimental_rerun()
+    except Exception:
+        pass
 
 # Apply LR Paris style
 st.markdown("""
@@ -51,64 +87,43 @@ st.markdown("# **FINANCIAL CALCULATORS**")
 st.button("🔁 RESET ALL FIELDS", on_click=reset_fields)
 
 # --- Selling Price by Margin ---
-
 with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
-    with st.container():
-        total_cost = st.number_input("TOTAL COST", min_value=0.0, key="margin_total_cost", value=None, placeholder="")
-        margin = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="margin_margin", value=None, placeholder="")
+            total_cost = st.number_input("TOTAL COST", min_value=0.0, key="margin_total_cost", value=None, placeholder="")
+            margin = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="margin_margin", value=None, placeholder="")
 
-        if total_cost is not None and margin is not None and margin < 100:
+            if total_cost is not None and margin is not None and margin < 100:
             selling_price = total_cost / (1 - margin / 100)
             profit = selling_price - total_cost
-        else:
+            else:
             selling_price = profit = 0.0
 
         st.metric("SELLING PRICE", f"${selling_price:.2f}")
         st.metric("PROFIT", f"${profit:.2f}")
 
-
-
-# --- Selling Price by Landed Cost ---
-
-
+# --- Margin by Selling Price ---
 with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
-    with st.container():
-        total_cost3 = st.number_input("TOTAL COST", min_value=0.0, key="margin_by_cost", value=None, placeholder="")
+            total_cost3 = st.number_input("TOTAL COST", min_value=0.0, key="margin_by_cost", value=None, placeholder="")
         price3 = st.number_input("SELLING PRICE", min_value=0.0, key="margin_by_price", value=None, placeholder="")
 
         if total_cost3 is not None and price3 is not None and price3:
             profit3 = price3 - total_cost3
             margin3 = profit3 / price3 * 100
-        else:
+            else:
             profit3 = margin3 = 0.0
 
         st.metric("MARGIN", f"{margin3:.2f}%")
         st.metric("PROFIT", f"${profit3:.2f}")
 
-# --- Vendor Pricing ---
-
-
+# --- Selling Price by Landed Cost ---
 with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
-    item_cost = st.number_input("ITEM COST", min_value=0.0, key="landed_item_cost")
-    quantity = st.number_input("QUANTITY", min_value=0, key="landed_quantity")
-    run_charge = st.number_input("RUN CHARGE", min_value=0.0, key="landed_run_charge")
-    shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, key="landed_shipping_cost")
-    sample_cost = st.number_input("SAMPLE COST", min_value=0.0, key="landed_sample_cost")
-    setup_cost = st.number_input("SETUP COST", min_value=0.0, key="landed_setup_cost")
-    margin_percent = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="landed_margin")
-
-    if quantity > 0:
-        total_cost = (item_cost * quantity) + (run_charge * quantity) + shipping_cost + sample_cost + setup_cost
-        unit_cost = total_cost / quantity
-        selling_price = unit_cost / (1 - margin_percent/100) if margin_percent < 100 else 0
-        profit_per_unit = selling_price - unit_cost
-        total_profit = profit_per_unit * quantity
-
-        st.metric("TOTAL COST", f"${total_cost:,.2f}")
-        st.metric("COST PER UNIT", f"${unit_cost:,.2f}")
-        st.metric("SELLING PRICE", f"${selling_price:,.2f}")
-        st.metric("PROFIT PER UNIT", f"${profit_per_unit:,.2f}")
-        st.metric("TOTAL PROFIT", f"${total_profit:,.2f}")
+            item_cost = st.number_input("ITEM COST", min_value=0.0, key="landed_item", value=None, placeholder="")
+        quantity = st.number_input("QTY", min_value=1, key="landed_qty", value=None, placeholder="")
+        run_charge = st.number_input("RUN CHARGE", min_value=0.0, key="landed_run", value=0.0, placeholder="")
+        shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, key="landed_shipping", value=0.0, placeholder="")
+        sample_cost = st.number_input("SAMPLE COST", min_value=0.0, key="landed_sample", value=0.0, placeholder="")
+        setup_cost = st.number_input("SETUP COST", min_value=0.0, key="landed_setup", value=0.0, placeholder="")
+        
+        margin2 = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="landed_margin", value=None, placeholder="")
 
         if all(v is not None for v in [item_cost, run_charge, quantity, shipping_cost, sample_cost, setup_cost, margin2]) and margin2 < 100:
             total_cost = ((item_cost + run_charge) * quantity + shipping_cost + sample_cost + setup_cost)
@@ -122,74 +137,93 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
             st.metric("SELLING PRICE", f"${unit_price:.2f}")
             st.metric("TOTAL SELLING PRICE", f"${total_selling_price:.2f}")
             st.metric("PROFIT", f"${profit2:.2f}")
-        else:
+            else:
             st.metric("UNIT COST", "$0.00")
             st.metric("TOTAL COST", "$0.00")
             st.metric("SELLING PRICE", "$0.00")
             st.metric("TOTAL SELLING PRICE", "$0.00")
             st.metric("PROFIT", "$0.00")
 
-# --- Margin by Selling Price ---
-
-
-
+# --- Apparel Selling Price Tool ---
 with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
-    st.markdown("### SIZE-BASED QUANTITIES AND COSTS")
-    cost_xxs_to_xl = st.number_input("XXS TO XL ITEM COST", min_value=0.0, step=0.01, key="cost_xxs_to_xl", value=0.0)
-    qty_xxs_to_xl = st.number_input("XXS TO XL QTY", min_value=0, step=1, key="qty_xxs_to_xl", value=0)
-    cost_2xl = st.number_input("2XL ITEM COST", min_value=0.0, step=0.01, key="cost_2xl", value=0.0)
-    qty_2xl = st.number_input("2XL QTY", min_value=0, step=1, key="qty_2xl", value=0)
-    cost_3xl = st.number_input("3XL ITEM COST", min_value=0.0, step=0.01, key="cost_3xl", value=0.0)
-    qty_3xl = st.number_input("3XL QTY", min_value=0, step=1, key="qty_3xl", value=0)
-    cost_4xl = st.number_input("4XL ITEM COST", min_value=0.0, step=0.01, key="cost_4xl", value=0.0)
-    qty_4xl = st.number_input("4XL QTY", min_value=0, step=1, key="qty_4xl", value=0)
-    st.markdown("### ADDITIONAL COSTS")
-    run_charge = st.number_input("RUN CHARGE", min_value=0.0, step=0.01, key="run_charge", value=0.0)
-    shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, step=0.01, key="apparel_shipping", value=0.0)
-    sample_cost = st.number_input("SAMPLE COST", min_value=0.0, step=0.01, key="apparel_sample", value=0.0)
-    setup_cost = st.number_input("SETUP COST", min_value=0.0, step=0.01, key="apparel_setup", value=0.0)
-    margin = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, step=0.1, key="apparel_margin", value=0.0)
-    total_units = qty_xxs_to_xl + qty_2xl + qty_3xl + qty_4xl
-    item_cost_total = (
-        cost_xxs_to_xl * qty_xxs_to_xl +
-        cost_2xl * qty_2xl +
-        cost_3xl * qty_3xl +
-        cost_4xl * qty_4xl
-    )
-    additional_costs = shipping_cost + sample_cost + setup_cost + (run_charge * total_units)
-    total_cost = item_cost_total + additional_costs
-    avg_cost_per_unit = total_cost / total_units if total_units else 0
-    selling_price_per_unit = avg_cost_per_unit / (1 - margin/100) if margin < 100 else 0
-    profit_per_unit = selling_price_per_unit - avg_cost_per_unit
-    total_profit = profit_per_unit * total_units
-    st.metric("TOTAL UNITS", total_units)
-    st.metric("AVG COST PER UNIT", f"${avg_cost_per_unit:.2f}")
-    st.metric("SELLING PRICE PER UNIT", f"${selling_price_per_unit:.2f}")
-    st.metric("PROFIT PER UNIT", f"${profit_per_unit:.2f}")
-    st.metric("TOTAL PROFIT", f"${total_profit:,.2f}")
+            st.markdown("### ITEM COST PER SIZE")
+        cost_xxs_to_xl = st.number_input("XXS TO XL ITEM COST", min_value=0.0, step=0.01, key="cost_xxs_to_xl")
+        cost_2xl = st.number_input("2XL ITEM COST", min_value=0.0, step=0.01, key="cost_2xl")
+        cost_3xl = st.number_input("3XL ITEM COST", min_value=0.0, step=0.01, key="cost_3xl")
+        cost_4xl = st.number_input("4XL ITEM COST", min_value=0.0, step=0.01, key="cost_4xl")
+
+        st.markdown("### QUANTITIES PER SIZE")
+        qty_xxs_to_xl = st.number_input("XXS TO XL QTY", min_value=0, step=1, key="qty_xxs_to_xl")
+        qty_2xl = st.number_input("2XL QTY", min_value=0, step=1, key="qty_2xl")
+        qty_3xl = st.number_input("3XL QTY", min_value=0, step=1, key="qty_3xl")
+        qty_4xl = st.number_input("4XL QTY", min_value=0, step=1, key="qty_4xl")
+
+        st.markdown("### ADDITIONAL COSTS")
+        shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, step=0.01, key="apparel_shipping")
+        sample_cost = st.number_input("SAMPLE COST", min_value=0.0, step=0.01, key="apparel_sample")
+        setup_cost = st.number_input("SETUP COST", min_value=0.0, step=0.01, key="apparel_setup")
+        run_charge = st.number_input("RUN CHARGE", min_value=0.0, step=0.01, key="apparel_run")
+
+        margin_percent = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, value=0.0, key="apparel_margin")
+
+        if True:
+            total_units = qty_xxs_to_xl + qty_2xl + qty_3xl + qty_4xl
+            item_cost_total = (
+                (cost_xxs_to_xl * qty_xxs_to_xl) +
+                (cost_2xl * qty_2xl) +
+                (cost_3xl * qty_3xl) +
+                (cost_4xl * qty_4xl)
+            )
+            additional_costs = shipping_cost + sample_cost + setup_cost + (run_charge * total_units)
+            total_cost = item_cost_total + additional_costs
+            margin = margin_percent / 100 if margin_percent is not None else 0
+            avg_cost_per_unit = total_cost / total_units if total_units else 0
+            try:
+                required_selling_price = avg_cost_per_unit / (1 - margin) if margin < 1 else float('inf')
+            except ZeroDivisionError:
+                required_selling_price = 0
+
+            st.metric("TOTAL COST", f"${total_cost:,.2f}")
+            st.metric("AVG COST PER UNIT", f"${avg_cost_per_unit:,.2f}")
+            st.metric("REQUIRED SELLING PRICE", f"${required_selling_price:,.2f}")
 
 
-# --- TOOL 5: Vendor Pricing ---
-with st.expander("VENDOR PRICING", expanded=False):
-    base_price = st.number_input("BASE PRICE", min_value=0.0, step=0.01, key="vendor_base_price", value=0.0)
-    markup_percent = st.number_input("MARKUP %", min_value=0.0, max_value=100.0, step=0.1, key="vendor_markup_percent", value=0.0)
-    vendor_price = base_price * (1 + markup_percent/100)
-    st.metric("VENDOR PRICE", f"${vendor_price:,.2f}")
+# --- Vendor Pricing ---
+with st.expander("CALCULATE VENDOR PRICING", expanded=True):
+            vendor_price = st.number_input("VENDOR PRICE", min_value=0.0, key="vendor_price", value=None, placeholder="")
+        discount_code = st.text_input("DISCOUNT CODE", key="discount_code").upper()
 
-# --- TOOL 6: Discount Codes Reference ---
-with st.expander("REFERENCE: DISCOUNT CODES", expanded=False):
-    st.markdown('''
-    **ABC SYSTEM DISCOUNTS**
-    - A: 1000 pcs or more
-    - B: 500–999 pcs
-    - C: 250–499 pcs
-    - D: 100–249 pcs
+        discount = codes_dict_top.get(discount_code, codes_dict_bottom.get(discount_code, 0))
 
-    **PQR SYSTEM DISCOUNTS**
-    - P100: 0%
-    - P80: 20%
-    - P60: 40%
-    - P50: 50%
-    - P40: 60%
-    - P30: 70%
-    ''')
+        if vendor_price is not None:
+            unit_cost_vendor = vendor_price * (1 - discount)
+            else:
+            unit_cost_vendor = 0.0
+
+        st.metric("UNIT COST", f"${unit_cost_vendor:.2f}")
+
+        margin_vendor = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="margin_vendor", value=None, placeholder="")
+
+        if unit_cost_vendor > 0 and margin_vendor is not None and margin_vendor < 100:
+            selling_price_vendor = unit_cost_vendor / (1 - margin_vendor / 100)
+            profit_vendor = selling_price_vendor - unit_cost_vendor
+            else:
+            selling_price_vendor = profit_vendor = 0.0
+
+        st.metric("SELLING PRICE", f"${selling_price_vendor:.2f}")
+        st.metric("PROFIT", f"${profit_vendor:.2f}")
+
+# --- Display Discount Codes ---
+st.markdown("### ABC System")
+abc_table = pd.DataFrame.from_dict(codes_dict_top, orient='index', columns=["Discount"]).reset_index()
+abc_table.columns = ["Code", "Discount"]
+abc_table["Discount"] = abc_table["Discount"].apply(lambda x: f"{int(x*100)}%")
+st.dataframe(abc_table, use_container_width=True, hide_index=True)
+
+st.markdown("### PQR System")
+pqr_table = pd.DataFrame.from_dict(codes_dict_bottom, orient='index', columns=["Discount"]).reset_index()
+pqr_table.columns = ["Code", "Discount"]
+pqr_table["Discount"] = pqr_table["Discount"].apply(lambda x: f"{int(x*100)}%")
+st.dataframe(pqr_table, use_container_width=True, hide_index=True)
+
+
