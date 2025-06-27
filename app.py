@@ -1,4 +1,28 @@
 import streamlit as st
+import streamlit as st
+
+# --- Defaults capture for RESET ALL FIELDS ---
+input_keys = [
+    'cost_margin', 'margin_margin',
+    'cost_margin2', 'selling_margin2',
+    'lc_item_cost', 'lc_quantity', 'lc_run_charge',
+    'lc_shipping_cost', 'lc_sample_cost', 'lc_setup_cost', 'lc_margin',
+    'cost_xxs_to_xl', 'cost_2xl', 'cost_3xl', 'cost_4xl',
+    'qty_xxs_to_xl', 'qty_2xl', 'qty_3xl', 'qty_4xl',
+    'apparel_shipping', 'apparel_sample', 'apparel_setup', 'apparel_run', 'apparel_margin'
+]
+if 'defaults' not in st.session_state:
+    st.session_state['defaults'] = {key: st.session_state.get(key) for key in input_keys}
+    st.session_state['defaults_captured'] = True
+
+def reset_all_fields():
+    # Reset inputs to their original defaults
+    for key, val in st.session_state['defaults'].items():
+        st.session_state[key] = val
+
+# Replace existing reset button call to use the new function
+st.button('🔄 RESET ALL FIELDS', on_click=reset_all_fields)
+
 import pandas as pd
 
 # Discount blocks
