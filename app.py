@@ -24,27 +24,28 @@ def reset_fields():
         'margin_by_price': None,
         'vendor_price': None,
         'margin_vendor': None,
-        # Fields with 0 initial values (no decimals)
-        'landed_item_cost': 0,
+        # Fields with 0 initial values (integers for quantities)
         'landed_quantity': 0,
-        'landed_run_charge': 0,
-        'landed_shipping_cost': 0,
-        'landed_sample_cost': 0,
-        'landed_setup_cost': 0,
-        'landed_margin': 0,
-        'cost_xxs_to_xl': 0,
         'qty_xxs_to_xl': 0,
-        'cost_2xl': 0,
         'qty_2xl': 0,
-        'cost_3xl': 0,
         'qty_3xl': 0,
-        'cost_4xl': 0,
         'qty_4xl': 0,
-        'apparel_run_charge': 0,
-        'apparel_shipping': 0,
-        'apparel_sample': 0,
-        'apparel_setup': 0,
-        'apparel_margin': 0,
+        # Fields with 0.0 initial values (floats for costs and percentages)
+        'landed_item_cost': 0.0,
+        'landed_run_charge': 0.0,
+        'landed_shipping_cost': 0.0,
+        'landed_sample_cost': 0.0,
+        'landed_setup_cost': 0.0,
+        'landed_margin': 0.0,
+        'cost_xxs_to_xl': 0.0,
+        'cost_2xl': 0.0,
+        'cost_3xl': 0.0,
+        'cost_4xl': 0.0,
+        'apparel_run_charge': 0.0,
+        'apparel_shipping': 0.0,
+        'apparel_sample': 0.0,
+        'apparel_setup': 0.0,
+        'apparel_margin': 0.0,
         # Text field with empty string
         'discount_code': ""
     }
@@ -117,13 +118,13 @@ with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
 
 # --- Selling Price by Landed Cost ---
 with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
-    item_cost = st.number_input("ITEM COST", min_value=0, key="landed_item_cost", value=0)
+    item_cost = st.number_input("ITEM COST", min_value=0, key="landed_item_cost", value=0.0)
     quantity = st.number_input("QUANTITY", min_value=0, key="landed_quantity", value=0)
-    run_charge = st.number_input("RUN CHARGE", min_value=0, key="landed_run_charge", value=0)
-    shipping_cost = st.number_input("SHIPPING COST", min_value=0, key="landed_shipping_cost", value=0)
-    sample_cost = st.number_input("SAMPLE COST", min_value=0, key="landed_sample_cost", value=0)
-    setup_cost = st.number_input("SETUP COST", min_value=0, key="landed_setup_cost", value=0)
-    margin_percent = st.number_input("MARGIN %", min_value=0, max_value=99, key="landed_margin", value=0)
+    run_charge = st.number_input("RUN CHARGE", min_value=0, key="landed_run_charge", value=0.0)
+    shipping_cost = st.number_input("SHIPPING COST", min_value=0, key="landed_shipping_cost", value=0.0)
+    sample_cost = st.number_input("SAMPLE COST", min_value=0, key="landed_sample_cost", value=0.0)
+    setup_cost = st.number_input("SETUP COST", min_value=0, key="landed_setup_cost", value=0.0)
+    margin_percent = st.number_input("MARGIN %", min_value=0, max_value=99, key="landed_margin", value=0.0)
 
     if quantity > 0:
         total_cost = (item_cost * quantity) + (run_charge * quantity) + shipping_cost + sample_cost + setup_cost
@@ -163,17 +164,17 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
     
     with cost_col:
         st.markdown("**COSTS**")
-        cost_xxs_to_xl = st.number_input("XXS TO XL ITEM COST", min_value=0, step=0.01, key="cost_xxs_to_xl", value=0)
-        cost_2xl = st.number_input("2XL ITEM COST", min_value=0, step=0.01, key="cost_2xl", value=0)
-        cost_3xl = st.number_input("3XL ITEM COST", min_value=0, step=0.01, key="cost_3xl", value=0)
-        cost_4xl = st.number_input("4XL ITEM COST", min_value=0, step=0.01, key="cost_4xl", value=0)
+        cost_xxs_to_xl = st.number_input("XXS TO XL ITEM COST", min_value=0.0, step=0.01, key="cost_xxs_to_xl", value=0.0)
+        cost_2xl = st.number_input("2XL ITEM COST", min_value=0.0, step=0.01, key="cost_2xl", value=0.0)
+        cost_3xl = st.number_input("3XL ITEM COST", min_value=0.0, step=0.01, key="cost_3xl", value=0.0)
+        cost_4xl = st.number_input("4XL ITEM COST", min_value=0.0, step=0.01, key="cost_4xl", value=0.0)
     
     st.markdown("### ADDITIONAL COSTS")
-    run_charge = st.number_input("RUN CHARGE", min_value=0, step=0.01, key="apparel_run_charge", value=0)
-    shipping_cost = st.number_input("SHIPPING COST", min_value=0, step=0.01, key="apparel_shipping", value=0)
-    sample_cost = st.number_input("SAMPLE COST", min_value=0, step=0.01, key="apparel_sample", value=0)
-    setup_cost = st.number_input("SETUP COST", min_value=0, step=0.01, key="apparel_setup", value=0)
-    margin = st.number_input("MARGIN %", min_value=0, max_value=99, step=0.1, key="apparel_margin", value=0)
+    run_charge = st.number_input("RUN CHARGE", min_value=0.0, step=0.01, key="apparel_run_charge", value=0.0)
+    shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, step=0.01, key="apparel_shipping", value=0.0)
+    sample_cost = st.number_input("SAMPLE COST", min_value=0.0, step=0.01, key="apparel_sample", value=0.0)
+    setup_cost = st.number_input("SETUP COST", min_value=0.0, step=0.01, key="apparel_setup", value=0.0)
+    margin = st.number_input("MARGIN %", min_value=0.0, max_value=99.0, step=0.1, key="apparel_margin", value=0.0)
     
     total_units = qty_xxs_to_xl + qty_2xl + qty_3xl + qty_4xl
     item_cost_total = (
