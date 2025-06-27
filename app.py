@@ -168,3 +168,28 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
     st.metric("PROFIT PER UNIT", f"${profit_per_unit:.2f}")
     st.metric("TOTAL PROFIT", f"${total_profit:,.2f}")
 
+
+# --- TOOL 5: Vendor Pricing ---
+with st.expander("VENDOR PRICING", expanded=False):
+    base_price = st.number_input("BASE PRICE", min_value=0.0, step=0.01, key="vendor_base_price", value=0.0)
+    markup_percent = st.number_input("MARKUP %", min_value=0.0, max_value=100.0, step=0.1, key="vendor_markup_percent", value=0.0)
+    vendor_price = base_price * (1 + markup_percent/100)
+    st.metric("VENDOR PRICE", f"${vendor_price:,.2f}")
+
+# --- TOOL 6: Discount Codes Reference ---
+with st.expander("REFERENCE: DISCOUNT CODES", expanded=False):
+    st.markdown('''
+    **ABC SYSTEM DISCOUNTS**
+    - A: 1000 pcs or more
+    - B: 500–999 pcs
+    - C: 250–499 pcs
+    - D: 100–249 pcs
+
+    **PQR SYSTEM DISCOUNTS**
+    - P100: 0%
+    - P80: 20%
+    - P60: 40%
+    - P50: 50%
+    - P40: 60%
+    - P30: 70%
+    ''')
