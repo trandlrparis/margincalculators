@@ -18,7 +18,6 @@ def reset_fields():
     # Clear only user input session state keys
     for key in list(st.session_state.keys()):
         del st.session_state[key]
-    st.experimental_rerun()
 st.set_page_config(layout="wide")
 
 # Apply LR Paris style
