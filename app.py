@@ -13,23 +13,44 @@ codes_dict_bottom = {
     "Y": 0.05, "Z": 0.0
 }
 
-# Reset function - only clear input fields, preserve calculated outputs
+# Reset function - reset input fields to their initial values
 def reset_fields():
-    # Define the input field keys that should be reset
-    input_keys = [
-        'margin_total_cost', 'margin_margin',
-        'margin_by_cost', 'margin_by_price',
-        'landed_item_cost', 'landed_quantity', 'landed_run_charge', 'landed_shipping_cost', 
-        'landed_sample_cost', 'landed_setup_cost', 'landed_margin',
-        'cost_xxs_to_xl', 'qty_xxs_to_xl', 'cost_2xl', 'qty_2xl', 'cost_3xl', 'qty_3xl', 
-        'cost_4xl', 'qty_4xl', 'apparel_run_charge', 'apparel_shipping', 'apparel_sample', 
-        'apparel_setup', 'apparel_margin',
-        'vendor_price', 'discount_code', 'margin_vendor'
-    ]
+    # Reset fields to their default values based on their initial state
+    reset_values = {
+        # Fields with None/placeholder initial values
+        'margin_total_cost': None,
+        'margin_margin': None,
+        'margin_by_cost': None,
+        'margin_by_price': None,
+        'vendor_price': None,
+        'margin_vendor': None,
+        # Fields with 0.0 initial values
+        'landed_item_cost': 0.0,
+        'landed_quantity': 0,
+        'landed_run_charge': 0.0,
+        'landed_shipping_cost': 0.0,
+        'landed_sample_cost': 0.0,
+        'landed_setup_cost': 0.0,
+        'landed_margin': 0.0,
+        'cost_xxs_to_xl': 0.0,
+        'qty_xxs_to_xl': 0,
+        'cost_2xl': 0.0,
+        'qty_2xl': 0,
+        'cost_3xl': 0.0,
+        'qty_3xl': 0,
+        'cost_4xl': 0.0,
+        'qty_4xl': 0,
+        'apparel_run_charge': 0.0,
+        'apparel_shipping': 0.0,
+        'apparel_sample': 0.0,
+        'apparel_setup': 0.0,
+        'apparel_margin': 0.0,
+        # Text field with empty string
+        'discount_code': ""
+    }
     
-    for key in input_keys:
-        if key in st.session_state:
-            del st.session_state[key]
+    for key, value in reset_values.items():
+        st.session_state[key] = value
 
 st.set_page_config(layout="wide")
 
@@ -63,26 +84,6 @@ st.markdown("""
 
 st.markdown("# **FINANCIAL CALCULATORS**")
 st.button("🔁 RESET ALL FIELDS", on_click=reset_fields)
-
-# --- Discount Codes Reference - Now visible by default ---
-st.markdown("## **DISCOUNT CODES REFERENCE**")
-col1, col2 = st.columns(2)
-
-with col1:
-    st.markdown("**ABC SYSTEM**")
-    abc_table = pd.DataFrame.from_dict(codes_dict_top, orient='index', columns=["Discount"]).reset_index()
-    abc_table.columns = ["Code", "Discount"]
-    abc_table["Discount"] = abc_table["Discount"].apply(lambda x: f"{int(x*100)}%")
-    st.dataframe(abc_table, use_container_width=True, hide_index=True)
-
-with col2:
-    st.markdown("**PQR SYSTEM**")
-    pqr_table = pd.DataFrame.from_dict(codes_dict_bottom, orient='index', columns=["Discount"]).reset_index()
-    pqr_table.columns = ["Code", "Discount"]
-    pqr_table["Discount"] = pqr_table["Discount"].apply(lambda x: f"{int(x*100)}%")
-    st.dataframe(pqr_table, use_container_width=True, hide_index=True)
-
-st.markdown("---")
 
 # --- Selling Price by Margin ---
 with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
@@ -211,3 +212,22 @@ with st.expander("CALCULATE VENDOR PRICING", expanded=True):
 
         st.metric("SELLING PRICE", f"${selling_price_vendor:.2f}")
         st.metric("PROFIT", f"${profit_vendor:.2f}")
+
+# --- Discount Codes Reference - At bottom of page ---
+st.markdown("---")
+st.markdown("## **DISCOUNT CODES REFERENCE**")
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("**ABC SYSTEM**")
+    abc_table = pd.DataFrame.from_dict(codes_dict_top, orient='index', columns=["Discount"]).reset_index()
+    abc_table.columns = ["Code", "Discount"]
+    abc_table["Discount"] = abc_table["Discount"].apply(lambda x: f"{int(x*100)}%")
+    st.dataframe(abc_table, use_container_width=True, hide_index=True)
+
+with col2:
+    st.markdown("**PQR SYSTEM**")
+    pqr_table = pd.DataFrame.from_dict(codes_dict_bottom, orient='index', columns=["Discount"]).reset_index()
+    pqr_table.columns = ["Code", "Discount"]
+    pqr_table["Discount"] = pqr_table["Discount"].apply(lambda x: f"{int(x*100)}%")
+    st.dataframe(pqr_table, use_container_width=True, hide_index=True)
