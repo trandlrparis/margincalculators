@@ -91,10 +91,10 @@ with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
             total_cost = st.number_input("TOTAL COST", min_value=0.0, key="margin_total_cost", value=None, placeholder="")
             margin = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="margin_margin", value=None, placeholder="")
 
-        if total_cost is not None and margin is not None and margin < 100:
+            if total_cost is not None and margin is not None and margin < 100:
             selling_price = total_cost / (1 - margin / 100)
             profit = selling_price - total_cost
-        else:
+            else:
             selling_price = profit = 0.0
 
         st.metric("SELLING PRICE", f"${selling_price:.2f}")
@@ -108,7 +108,7 @@ with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
         if total_cost3 is not None and price3 is not None and price3:
             profit3 = price3 - total_cost3
             margin3 = profit3 / price3 * 100
-        else:
+            else:
             profit3 = margin3 = 0.0
 
         st.metric("MARGIN", f"{margin3:.2f}%")
@@ -137,7 +137,7 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
             st.metric("SELLING PRICE", f"${unit_price:.2f}")
             st.metric("TOTAL SELLING PRICE", f"${total_selling_price:.2f}")
             st.metric("PROFIT", f"${profit2:.2f}")
-        else:
+            else:
             st.metric("UNIT COST", "$0.00")
             st.metric("TOTAL COST", "$0.00")
             st.metric("SELLING PRICE", "$0.00")
@@ -197,7 +197,7 @@ with st.expander("CALCULATE VENDOR PRICING", expanded=True):
 
         if vendor_price is not None:
             unit_cost_vendor = vendor_price * (1 - discount)
-        else:
+            else:
             unit_cost_vendor = 0.0
 
         st.metric("UNIT COST", f"${unit_cost_vendor:.2f}")
@@ -207,7 +207,7 @@ with st.expander("CALCULATE VENDOR PRICING", expanded=True):
         if unit_cost_vendor > 0 and margin_vendor is not None and margin_vendor < 100:
             selling_price_vendor = unit_cost_vendor / (1 - margin_vendor / 100)
             profit_vendor = selling_price_vendor - unit_cost_vendor
-        else:
+            else:
             selling_price_vendor = profit_vendor = 0.0
 
         st.metric("SELLING PRICE", f"${selling_price_vendor:.2f}")
