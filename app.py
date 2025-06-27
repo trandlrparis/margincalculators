@@ -15,13 +15,20 @@ if 'defaults' not in st.session_state:
     st.session_state['defaults'] = {key: st.session_state.get(key) for key in input_keys}
     st.session_state['defaults_captured'] = True
 
-def reset_all_fields():
-    # Reset inputs to their original defaults
-    for key, val in st.session_state['defaults'].items():
-        st.session_state[key] = val
 
-# Replace existing reset button call to use the new function
-st.button('🔄 RESET ALL FIELDS', on_click=reset_all_fields)
+def reset_all_fields():
+    # Clear user input keys
+    for key in list(st.session_state.keys()):
+        if key.startswith("cost_") or key.startswith("qty_") or key.endswith("_margin"):
+            del st.session_state[key]
+    # Rerun to apply cleared inputs
+    try:
+        st.experimental_rerun()
+    except:
+        pass
+
+st.button("🔄 RESET ALL FIELDS", on_click=reset_all_fields)
+
 
 import pandas as pd
 
@@ -81,8 +88,7 @@ st.button("🔁 RESET ALL FIELDS", on_click=reset_fields)
 
 # --- Selling Price by Margin ---
 with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
-    with st.container():
-        total_cost = st.number_input("TOTAL COST", min_value=0.0, key="margin_total_cost", value=None, placeholder="")
+            total_cost = st.number_input("TOTAL COST", min_value=0.0, key="margin_total_cost", value=None, placeholder="")
         margin = st.number_input("MARGIN %", min_value=0.0, max_value=99.9, key="margin_margin", value=None, placeholder="")
 
         if total_cost is not None and margin is not None and margin < 100:
@@ -96,8 +102,7 @@ with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
 
 # --- Margin by Selling Price ---
 with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
-    with st.container():
-        total_cost3 = st.number_input("TOTAL COST", min_value=0.0, key="margin_by_cost", value=None, placeholder="")
+            total_cost3 = st.number_input("TOTAL COST", min_value=0.0, key="margin_by_cost", value=None, placeholder="")
         price3 = st.number_input("SELLING PRICE", min_value=0.0, key="margin_by_price", value=None, placeholder="")
 
         if total_cost3 is not None and price3 is not None and price3:
@@ -111,8 +116,7 @@ with st.expander("CALCULATE MARGIN BY SELLING PRICE", expanded=False):
 
 # --- Selling Price by Landed Cost ---
 with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
-    with st.container():
-        item_cost = st.number_input("ITEM COST", min_value=0.0, key="landed_item", value=None, placeholder="")
+            item_cost = st.number_input("ITEM COST", min_value=0.0, key="landed_item", value=None, placeholder="")
         quantity = st.number_input("QTY", min_value=1, key="landed_qty", value=None, placeholder="")
         run_charge = st.number_input("RUN CHARGE", min_value=0.0, key="landed_run", value=0.0, placeholder="")
         shipping_cost = st.number_input("SHIPPING COST", min_value=0.0, key="landed_shipping", value=0.0, placeholder="")
@@ -142,8 +146,7 @@ with st.expander("CALCULATE SELLING PRICE BY LANDED COST", expanded=False):
 
 # --- Apparel Selling Price Tool ---
 with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
-    with st.container():
-        st.markdown("### ITEM COST PER SIZE")
+            st.markdown("### ITEM COST PER SIZE")
         cost_xxs_to_xl = st.number_input("XXS TO XL ITEM COST", min_value=0.0, step=0.01, key="cost_xxs_to_xl")
         cost_2xl = st.number_input("2XL ITEM COST", min_value=0.0, step=0.01, key="cost_2xl")
         cost_3xl = st.number_input("3XL ITEM COST", min_value=0.0, step=0.01, key="cost_3xl")
@@ -187,8 +190,7 @@ with st.expander("CALCULATE APPAREL SELLING PRICE", expanded=False):
 
 # --- Vendor Pricing ---
 with st.expander("CALCULATE VENDOR PRICING", expanded=True):
-    with st.container():
-        vendor_price = st.number_input("VENDOR PRICE", min_value=0.0, key="vendor_price", value=None, placeholder="")
+            vendor_price = st.number_input("VENDOR PRICE", min_value=0.0, key="vendor_price", value=None, placeholder="")
         discount_code = st.text_input("DISCOUNT CODE", key="discount_code").upper()
 
         discount = codes_dict_top.get(discount_code, codes_dict_bottom.get(discount_code, 0))
