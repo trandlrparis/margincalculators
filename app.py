@@ -15,10 +15,14 @@ codes_dict_bottom = {
 
 # Reset function
 def reset_fields():
-    # Clear only user input session state keys
+    # Clear only user input session state
     for key in list(st.session_state.keys()):
-        del st.session_state[key]
-st.set_page_config(layout="wide")
+        if key != '_':
+            del st.session_state[key]
+    try:
+        st.experimental_rerun()
+    except Exception:
+        pass
 
 # Apply LR Paris style
 st.markdown("""
