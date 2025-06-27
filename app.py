@@ -13,13 +13,21 @@ codes_dict_bottom = {
     "Y": 0.05, "Z": 0.0
 }
 
-# Reset function - only clear input fields, not calculated outputs
+# Reset function - only clear input fields, preserve calculated outputs
 def reset_fields():
-    keys_to_clear = [key for key in st.session_state.keys() 
-                     if not key.startswith('FormSubmitter:') and 
-                     not key.startswith('_') and
-                     key != 'reset_button']
-    for key in keys_to_clear:
+    # Define the input field keys that should be reset
+    input_keys = [
+        'margin_total_cost', 'margin_margin',
+        'margin_by_cost', 'margin_by_price',
+        'landed_item_cost', 'landed_quantity', 'landed_run_charge', 'landed_shipping_cost', 
+        'landed_sample_cost', 'landed_setup_cost', 'landed_margin',
+        'cost_xxs_to_xl', 'qty_xxs_to_xl', 'cost_2xl', 'qty_2xl', 'cost_3xl', 'qty_3xl', 
+        'cost_4xl', 'qty_4xl', 'apparel_run_charge', 'apparel_shipping', 'apparel_sample', 
+        'apparel_setup', 'apparel_margin',
+        'vendor_price', 'discount_code', 'margin_vendor'
+    ]
+    
+    for key in input_keys:
         if key in st.session_state:
             del st.session_state[key]
 
@@ -55,6 +63,26 @@ st.markdown("""
 
 st.markdown("# **FINANCIAL CALCULATORS**")
 st.button("🔁 RESET ALL FIELDS", on_click=reset_fields)
+
+# --- Discount Codes Reference - Now visible by default ---
+st.markdown("## **DISCOUNT CODES REFERENCE**")
+col1, col2 = st.columns(2)
+
+with col1:
+    st.markdown("**ABC SYSTEM**")
+    abc_table = pd.DataFrame.from_dict(codes_dict_top, orient='index', columns=["Discount"]).reset_index()
+    abc_table.columns = ["Code", "Discount"]
+    abc_table["Discount"] = abc_table["Discount"].apply(lambda x: f"{int(x*100)}%")
+    st.dataframe(abc_table, use_container_width=True, hide_index=True)
+
+with col2:
+    st.markdown("**PQR SYSTEM**")
+    pqr_table = pd.DataFrame.from_dict(codes_dict_bottom, orient='index', columns=["Discount"]).reset_index()
+    pqr_table.columns = ["Code", "Discount"]
+    pqr_table["Discount"] = pqr_table["Discount"].apply(lambda x: f"{int(x*100)}%")
+    st.dataframe(pqr_table, use_container_width=True, hide_index=True)
+
+st.markdown("---")
 
 # --- Selling Price by Margin ---
 with st.expander("CALCULATE SELLING PRICE BY MARGIN", expanded=False):
@@ -183,21 +211,3 @@ with st.expander("CALCULATE VENDOR PRICING", expanded=True):
 
         st.metric("SELLING PRICE", f"${selling_price_vendor:.2f}")
         st.metric("PROFIT", f"${profit_vendor:.2f}")
-
-# --- Discount Codes Reference ---
-with st.expander("REFERENCE: DISCOUNT CODES", expanded=False):
-    col1, col2 = st.columns(2)
-    
-    with col1:
-        st.markdown("**ABC SYSTEM**")
-        abc_table = pd.DataFrame.from_dict(codes_dict_top, orient='index', columns=["Discount"]).reset_index()
-        abc_table.columns = ["Code", "Discount"]
-        abc_table["Discount"] = abc_table["Discount"].apply(lambda x: f"{int(x*100)}%")
-        st.dataframe(abc_table, use_container_width=True, hide_index=True)
-    
-    with col2:
-        st.markdown("**PQR SYSTEM**")
-        pqr_table = pd.DataFrame.from_dict(codes_dict_bottom, orient='index', columns=["Discount"]).reset_index()
-        pqr_table.columns = ["Code", "Discount"]
-        pqr_table["Discount"] = pqr_table["Discount"].apply(lambda x: f"{int(x*100)}%")
-        st.dataframe(pqr_table, use_container_width=True, hide_index=True)
