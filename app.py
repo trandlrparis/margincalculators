@@ -80,7 +80,37 @@ st.markdown("""
             font-weight: bold;
             color: #002855;
         }
+        /* Allow scrolling even when hovering over input fields */
+        .stNumberInput input[type="number"] {
+            -moz-appearance: textfield;
+        }
+        .stNumberInput input[type="number"]::-webkit-outer-spin-button,
+        .stNumberInput input[type="number"]::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+        .stNumberInput > div > div > input {
+            pointer-events: auto;
+        }
+        /* Prevent number input scroll hijacking */
+        input[type="number"] {
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
+        }
+        input[type="number"]:focus {
+            -moz-appearance: textfield;
+        }
     </style>
+    <script>
+        // Prevent number inputs from capturing scroll events
+        document.addEventListener('DOMContentLoaded', function() {
+            document.addEventListener('wheel', function(e) {
+                if (document.activeElement.type === 'number') {
+                    document.activeElement.blur();
+                }
+            });
+        });
+    </script>
 """, unsafe_allow_html=True)
 
 st.markdown("# **FINANCIAL CALCULATORS**")
